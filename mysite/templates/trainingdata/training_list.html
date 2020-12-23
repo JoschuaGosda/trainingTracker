@@ -1,0 +1,464 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+
+
+<h1>Training History </h1>
+<!-- Button trigger modal -->
+
+<div class="row">
+  <div class="col-6">
+    <button type="button" class="btn btn-outline-info waves-effect " data-toggle="modal" data-target="#exampleModalCenter">
+      Info
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalCenterTitle">Your training history</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times </span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p> The training history shows a timeline of your training. It helps you to keep track of what and how often you train.
+            </p>
+            <p>There are different options to define a session. You got to choose from predefined <i>Deadhang</i> and <i>Pullup</i> sessions
+              as well as a <i>Custom</i> session. You may want to try the predefined sessions first to get an idea how things work. Predefined sessions
+              are specificly defined to the appropriate exercise. For example the session <i>Deadhang Maximum Strength</i> shows
+              the fields <i>Date, Hand position, hands, weight</i> etc which have to be filled (see the *; except for the <i>comment</i>) to make an exercise complete as well as to track
+              your progress in the <i>Analyse</i> section.</p>
+              <p>For a custom session things work just a little different. It provides all sort of fields that you might need to log your training.
+              As you won't need all fields every time, you can just leave them blank and they will not appear in the training history.</p>
+              <p>Furthermore, each session in the timeline provides a dot upfront to display the according enery system that was trained.
+                This can be used to get a general overview about your training or to keep better track of your Mesocycles if you train on a periodically basis.
+                There exist three colors:</p>
+              <ul>
+                <li><span class="dot" style="height: 15px;
+                  width: 15px;
+                  background-color: #C14242;
+                  border-radius: 50%;
+                  display: inline-block;"></span> Maximum Strength (anaerobic alactic)</li>
+                  <li><span class="dot" style="height: 15px;
+                    width: 15px;
+                    background-color: #3F68BF;
+                    border-radius: 50%;
+                    display: inline-block;"></span> Strength-Endurance (glycolytic/anaerobic lactic)</li>
+                    <li><span class="dot" style="height: 15px;
+                      width: 15px;
+                      background-color: #EAD342;
+                      border-radius: 50%;
+                      display: inline-block;"></span> Aerobic Endurance (aerobic/oxidative)</li>
+              </ul>
+              Alright, let's get started! Happy Training.
+          </div>
+          <!-- <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div> -->
+        </div>
+      </div>
+    </div>
+    <br><br>
+  </div>
+
+
+  <div class="col-6">
+   
+    <!-- Basic dropdown -->
+    <a class="btn btn-primary dropdown-toggle mr-4 float-right" type="button" data-toggle="dropdown" aria-haspopup="true"
+    aria-expanded="false">Filter</a>
+
+    <div class="dropdown-menu">
+    <a class="dropdown-item" href="{% url 'record_list'  %}">All</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="{% url 'record_list_max'  %}">Maximum Strength</a>
+    <a class="dropdown-item" href="{% url 'record_list_end'  %}">Strength-Endurance</a>
+    </div>
+    <!-- Basic dropdown -->
+
+  </div>
+</div>
+
+
+
+
+
+
+<ul>
+{% for training in object_list %}
+<h6>{% ifchanged %} Week <strong>{{training.date|date:"W"}}</strong></h6>
+<strong><hr></strong>
+ {% endifchanged %}
+{% ifchanged  %}
+<!-- <div class="shadow p-3 mb-3 bg-white rounded" "> -->
+  {{training.date|date:"D, j. F Y"}}
+  <hr>
+<!-- </div> -->
+ {% endifchanged %}
+
+  {% if training.training_dmax  %}
+<div class="row">
+  <div class="col-1">
+
+  </div>
+  <div class="col-11 align-self-end">
+    <div class="card ">
+      <div class="card-body ">
+        <!-- <h5 class="card-title">{{training.training_dmax.date|date:"H:i"}}</h5> -->
+        <h6 class="card-subtitle mb-2 text-muted">
+          <span class="dot" style="height: 15px;
+            width: 15px;
+            background-color: #C14242;
+            border-radius: 50%;
+            display: inline-block;"></span>
+           Deadhang Maximum Strength #{{training.training_dmax.session_counter}} - {{training.training_dmax.date|date:"H:i"}}
+        | <a href="{% url 'update_dmax' training.training_dmax.id %}" class="link">edit</a>
+        </h6>
+        <div class="row">
+          <div class="col-lg-auto">
+            <div>
+              Handposition: <strong>{{training.training_dmax.get_hand_position_display}} </strong>
+                <!-- |  Hand(s):<strong>{{training.training_dmax.get_hands_display}} </strong>
+                |  Crimp size: <strong>{{training.training_dmax.crimp_size}} mm </strong>
+                |  Weight: <strong>{{training.training_dmax.weight}} kg</strong> -->
+            </div>
+          </div>
+          <div class="col-lg-auto">
+             <div>
+               Hand(s): <strong>{{training.training_dmax.get_hands_display}}</strong>
+             </div>
+          </div>
+          <div class="col-lg-auto">
+            <div >
+              Crimp size: <strong>{{training.training_dmax.crimp_size}} </strong>mm
+            </div>
+          </div>
+          <div class="col-lg-auto">
+            <div>
+              Weight: <strong>{{training.training_dmax.weight}} </strong>kg
+            </div>
+          </div>
+          <div class="col-lg-auto">
+            <div>
+              Sets: <strong>{{training.training_dmax.sets}} </strong>
+            </div>
+          </div>
+          {% if training.training_dmax.comment %}
+          <div class="col-lg-auto align-self-start">
+            <div>
+              <p align="justify">
+              Comment: <i>{{training.training_dmax.comment}} </i>
+              </p>
+            </div>
+          </div>
+          {% endif %}
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<br>
+
+
+  {% elif training.training_dend  %}
+  <div class="row">
+    <div class="col-1">
+
+    </div>
+    <div class="col-11 align-self-end">
+    <div class="card">
+      <div class="card-body">
+        <!-- <h5 class="card-title">{{training.training_dend.date|date:"H:i"}}</h5> -->
+        <h6 class="card-subtitle mb-2 text-muted">
+          <span class="dot" style="height: 15px;
+            width: 15px;
+            background-color: #3F68BF;
+            border-radius: 50%;
+            display: inline-block;"></span>
+        Deadhang Strength-Endurance #{{training.training_dend.session_counter}} - {{training.training_dend.date|date:"H:i"}}
+        | <a href="{% url 'update_dend' training.training_dend.id %}" class="link">edit</a>
+        </h6>
+        <div class="row">
+          <div class="col-lg-auto">
+            <div>
+              Handposition: <strong>{{training.training_dend.get_hand_position_display}} </strong>
+                <!-- |  Hand(s):<strong>{{training.training_dmax.get_hands_display}} </strong>
+                |  Crimp size: <strong>{{training.training_dmax.crimp_size}} mm </strong>
+                |  Weight: <strong>{{training.training_dmax.weight}} kg</strong> -->
+            </div>
+          </div>
+          <div class="col-lg-auto">
+            <div >
+              Hold duration: <strong>{{training.training_dend.get_hold_duration_display}} </strong>
+            </div>
+          </div>
+          <div class="col-lg-auto">
+            <div >
+              Crimp size: <strong>{{training.training_dend.crimp_size}} </strong>mm
+            </div>
+          </div>
+          <div class="col-lg-auto">
+            <div >
+              Level: <strong>{{training.training_dend.level}} </strong>
+            </div>
+          </div>
+          <div class="col-lg-auto">
+            <div>
+              Weight: <strong>{{training.training_dend.weight}} </strong>kg
+            </div>
+          </div>
+          <div class="col-lg-auto">
+             <div>
+               Reps: <strong>{{training.training_dend.repetitions}}</strong>
+             </div>
+          </div>
+          <div class="col-lg-auto">
+            <div>
+              Sets: <strong>{{training.training_dend.sets}} </strong>
+            </div>
+          </div>
+          {% if training.training_dend.comment %}
+          <div class="col-lg-auto align-self-start">
+            <div>
+              <p align="justify">
+              Comment: <i>{{training.training_dend.comment}} </i>
+              </p>
+            </div>
+          </div>
+          {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+  <br>
+
+
+
+
+  {% elif training.training_pmax  %}
+  <div class="row">
+    <div class="col-1">
+
+    </div>
+    <div class="col-11 align-self-end">
+    <div class="card">
+      <div class="card-body">
+        <!-- <h5 class="card-title">{{training.training_pmax.date|date:"H:i"}}</h5> -->
+        <h6 class="card-subtitle mb-2 text-muted">
+          <span class="dot" style="height: 15px;
+            width: 15px;
+            background-color: #C14242;
+            border-radius: 50%;
+            display: inline-block;"></span>
+          Pullup Maximum Strength #{{training.training_pmax.session_counter}} - {{training.training_pmax.date|date:"H:i"}}
+        | <a href="{% url 'update_pmax' training.training_pmax.id %}" class="link">edit</a>
+        </h6>
+        <div class="row">
+          <div class="col-lg-auto">
+            <div>
+              Weigth: <strong>{{training.training_pmax.weight}} </strong>kg
+                <!-- |  Hand(s):<strong>{{training.training_dmax.get_hands_display}} </strong>
+                |  Crimp size: <strong>{{training.training_dmax.crimp_size}} mm </strong>
+                |  Weight: <strong>{{training.training_dmax.weight}} kg</strong> -->
+            </div>
+          </div>
+          <div class="col-lg-auto">
+             <div>
+               Reps: <strong>{{training.training_pmax.repetitions}}</strong>
+             </div>
+          </div>
+          <div class="col-lg-auto">
+            <div>
+              Sets: <strong>{{training.training_pmax.sets}} </strong>
+            </div>
+          </div>
+          {% if training.training_pmax.comment %}
+          <div class="col-lg-auto align-self-start">
+            <div>
+              <p align="justify">
+              Comment: <i>{{training.training_pmax.comment}} </i>
+              </p>
+            </div>
+          </div>
+          {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+  <br>
+
+
+  {% elif training.custom_training  %}
+  <div class="row">
+    <div class="col-1">
+
+    </div>
+    <div class="col-11 align-self-end">
+    <div class="card">
+      <div class="card-body">
+        <!-- <h5 class="card-title">{{training.training_pmax.date|date:"H:i"}}</h5> -->
+        <h6 class="card-subtitle mb-2 text-muted">
+          {% if training.custom_training.energy_system == '1' %}
+          <span class="dot" style="height: 15px;
+            width: 15px;
+            background-color: #C14242;
+            border-radius: 50%;
+            display: inline-block;"></span>
+          {% elif training.custom_training.energy_system == '2'  %}
+          <span class="dot" style="height: 15px;
+            width: 15px;
+            background-color: #3F68BF;
+            border-radius: 50%;
+            display: inline-block;"></span>
+          {% elif training.custom_training.energy_system == '3'  %}
+          <span class="dot" style="height: 15px;
+            width: 15px;
+            background-color: #EAD342;
+            border-radius: 50%;
+            display: inline-block;"></span>
+            {% endif %}
+
+          {{training.custom_training.title}} - {{training.custom_training.date|date:"H:i"}}
+        | <a href="{% url 'update_custom_training' training.custom_training.id %}" class="link">edit</a>
+        </h6>
+        <div class="row">
+          {% if training.custom_training.target %}
+          <div class="col-lg-auto">
+            <div>
+              Target: <strong>{{training.custom_training.get_target_display}}</strong>
+            </div>
+          </div>
+          {% endif %}
+          {% if training.custom_training.repetitions %}
+          <div class="col-lg-auto">
+            <div>
+              Reps: <strong>{{training.custom_training.repetitions}}</strong>
+            </div>
+          </div>
+          {% endif %}
+          {% if training.custom_training.on_off_time %}
+          <div class="col-lg-auto">
+            <div>
+              On/Off-Time: <strong>{{training.custom_training.on_off_time}} </strong>
+            </div>
+          </div>
+          {% endif %}
+          {% if training.custom_training.sets %}
+          <div class="col-lg-auto">
+            <div>
+              Sets: <strong>{{training.custom_training.sets}}</strong>
+            </div>
+          </div>
+          {% endif %}
+          {% if training.custom_training.weight %}
+          <div class="col-lg-auto">
+            <div>
+              Weight: <strong>{{training.custom_training.weight}}</strong> kg
+            </div>
+          </div>
+          {% endif %}
+          {% if training.custom_training.crimp_size %}
+          <div class="col-lg-auto">
+            <div>
+              Crimp Size: <strong>{{training.custom_training.crimp_size}} </strong>mm
+            </div>
+          </div>
+          {% endif %}
+          {% if training.custom_training.comment %}
+          <div class="col-lg-auto align-self-start">
+            <div>
+              <p align="justify">
+              Comment: <i>{{training.custom_training.comment}} </i>
+              </p>
+            </div>
+          </div>
+          {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+  <br>
+
+
+
+  {% elif training.training_pend  %}
+  <div class="row">
+    <div class="col-1">
+
+    </div>
+    <div class="col-11 align-self-end">
+    <div class="card">
+      <div class="card-body">
+        <!-- <h5 class="card-title">{{training.training_pend.date|date:"H:i"}}</h5> -->
+        <h6 class="card-subtitle mb-2 text-muted">
+          <span class="dot" style="height: 15px;
+            width: 15px;
+            background-color: #3F68BF;
+            border-radius: 50%;
+            display: inline-block;"></span>
+          Pullup Strength-Edurance #{{training.training_pend.session_counter}} - {{training.training_pend.date|date:"H:i"}}
+        | <a href="{% url 'update_pend' training.training_pend.id %}" class="link">edit</a>
+        </h6>
+        <div class="row">
+          <div class="col-lg-auto">
+             <div>
+               Reps: <strong>{{training.training_pend.repetitions}}</strong>
+             </div>
+          </div>
+          <div class="col-lg-auto">
+            <div>
+              Sets: <strong>{{training.training_pend.sets}} </strong>
+            </div>
+          </div>
+          {% if training.training_pend.comment %}
+          <div class="col-lg-auto align-self-start">
+            <div>
+              <p align="justify">
+              Comment: <i>{{training.training_pend.comment}} </i>
+              </p>
+            </div>
+          </div>
+          {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+  <br>
+
+  {% endif %}
+
+
+{% empty %}
+<div class="alert alert-primary" role="alert">
+  It seems you don't have any training sessions yet! Create one to get your training logging started.
+</div>
+{% endfor %}
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+
+

@@ -1,0 +1,858 @@
+{% extends 'base/base.html' %}
+{% block content %}
+
+
+
+
+<!-- Get the data from the database -->
+<script>
+  var endpoint = '/api/chart/data/dmax/'
+  var dmax_data_raw = []
+
+  var dmax_one_half = new Object();
+    dmax_one_half.crimpSize = []
+    dmax_one_half.dataX = []
+    dmax_one_half.dataY = []
+    dmax_one_half.data = []
+
+  var dmax_two_half = new Object();
+    dmax_two_half.crimpSize = []
+    dmax_two_half.dataX = []
+    dmax_two_half.dataY = []
+    dmax_two_half.data = []
+
+  var dmax_one_open = new Object();
+    dmax_one_open.crimpSize = []
+    dmax_one_open.dataX = []
+    dmax_one_open.dataY = []
+    dmax_one_open.data = []
+
+  var dmax_two_open = new Object();
+    dmax_two_open.crimpSize = []
+    dmax_two_open.dataX = []
+    dmax_two_open.dataY = []
+    dmax_two_open.data = []
+
+  var chart1 = new Object();
+  var chart2 = new Object();
+  var chart3 = new Object();
+  var chart4 = new Object();
+
+  var red = [
+    red_1 = {
+      borderColor: "#D50000",
+      // hoverBackgroundColor: "#1B5E20",
+      // hoverBorderColor: "#1B5E20",
+      // pointHoverBorderColor: "#BDBDBD",
+      // pointHoverBackgroundColor: "#BDBDBD",
+      // pointBackgroundColor: "#1B5E20",
+    },
+    red_2 = {
+      borderColor: "#FF1744",
+      // hoverBackgroundColor: "#388E3C",
+      // hoverBorderColor: "#388E3C",
+      // pointHoverBorderColor: "#BDBDBD",
+      // pointHoverBackgroundColor: "#BDBDBD",
+      // pointBackgroundColor: "#388E3C",
+    },
+    red_3 = {
+      borderColor: "#FF5252",
+      // hoverBackgroundColor: "#66BB6A",
+      // hoverBorderColor: "#66BB6A",
+      // pointHoverBorderColor: "#BDBDBD",
+      // pointHoverBackgroundColor: "#BDBDBD",
+      // pointBackgroundColor: "#66BB6A",
+    },
+    red_4 = {
+      borderColor: "#FF8A80",
+      // hoverBackgroundColor: "#A5D6A7",
+      // hoverBorderColor: "#A5D6A7",
+      // pointHoverBorderColor: "#BDBDBD",
+      // pointHoverBackgroundColor: "#BDBDBD",
+      // pointBackgroundColor: "#A5D6A7",
+    },
+    red_5 = {
+      borderColor: "#FFCDD2",
+      // hoverBackgroundColor: "#E8F5E9",
+      // hoverBorderColor: "#E8F5E9",
+      // pointHoverBorderColor: "#BDBDBD",
+      // pointHoverBackgroundColor: "#BDBDBD",
+      // pointBackgroundColor: "#E8F5E9",
+      }
+    ]
+// console.log("tint")
+// for( let i = 0; i<5; i++){
+//   console.log(green[i].strokeColor)
+// }
+
+
+
+  $.ajaxSetup({
+  async: true
+  });
+
+  $.ajax({
+    method: "GET",
+    url: endpoint,
+    success:  function(data){
+      dmax_data_raw = data
+      console.log(dmax_data_raw)
+      console.log('success')
+      if (dmax_data_raw[0].hand_position == 'HG' && dmax_data_raw[0].hands == 'TH'){
+        var test = true
+      }else{
+        var test = false
+      }
+      console.log(dmax_data_raw[0].hand_position)
+      console.log(test)
+
+      for (let i = 0; i < dmax_data_raw.length; i++){
+        if (dmax_data_raw[i].hand_position == 'HG' && dmax_data_raw[i].hands == 'OH') {
+          dmax_one_half.crimpSize.push(dmax_data_raw[i].crimp_size);
+          dmax_one_half.dataX.push(dmax_data_raw[i].date);
+          dmax_one_half.dataY.push(Number(dmax_data_raw[i].weight));
+        }
+        else if (dmax_data_raw[i].hand_position == 'HG' && dmax_data_raw[i].hands == 'TH') {
+          dmax_two_half.crimpSize.push(dmax_data_raw[i].crimp_size);
+          dmax_two_half.dataX.push(dmax_data_raw[i].date);
+          dmax_two_half.dataY.push(Number(dmax_data_raw[i].weight));
+        }
+        else if (dmax_data_raw[i].hand_position == 'OH' && dmax_data_raw[i].hands == 'OH') {
+          dmax_one_open.crimpSize.push(dmax_data_raw[i].crimp_size);
+          dmax_one_open.dataX.push(dmax_data_raw[i].date);
+          dmax_one_open.dataY.push(Number(dmax_data_raw[i].weight));
+        }
+        else if (dmax_data_raw[i].hand_position == 'OH' && dmax_data_raw[i].hands == 'TH') {
+          dmax_two_open.crimpSize.push(dmax_data_raw[i].crimp_size);
+          dmax_two_open.dataX.push(dmax_data_raw[i].date);
+          dmax_two_open.dataY.push(Number(dmax_data_raw[i].weight));
+        }
+      }
+
+        console.log(dmax_two_half)
+        console.log(dmax_two_half)
+
+      // seperateDatasets: Object übergeben mit den Kategorien crimpSize, dataX, dataY
+      if (dmax_two_half.dataX.length > 0){
+      var dmax_two_half_dsets = seperateDataset(dmax_two_half)
+      var dmax_two_half_data = datasetConfiguration(dmax_two_half_dsets)
+      var ctx = document.getElementById('myChart');
+      var myChart1 = new Chart(ctx, {
+          type: 'line',
+          data: dmax_two_half_data,
+          options: setOptions( 'Weight in kg', 'Two Hands/Halfgrimp', dmax_two_half)
+      });
+    }
+
+    if (dmax_two_open.dataX.length > 0){
+      var dmax_two_open_dsets = seperateDataset(dmax_two_open)
+      var dmax_two_open_data = datasetConfiguration(dmax_two_open_dsets)
+      var ctx2 = document.getElementById('myChart2');
+      var myChart2 = new Chart(ctx2, {
+          type: 'line',
+          data: dmax_two_open_data,
+          options: setOptions( 'Weight in kg', 'Two Hands/Openhand', dmax_two_open)
+      });
+    }
+
+    if (dmax_one_half.dataX.length > 0){
+      var dmax_one_half_dsets = seperateDataset(dmax_one_half)
+      console.log('hi du')
+      console.log(dmax_one_half_dsets)
+      var abc = 1
+      if (dmax_one_half_dsets){abc = 2}
+      console.log(abc)
+      var dmax_one_half_data = datasetConfiguration(dmax_one_half_dsets)
+      var ctx3 = document.getElementById('myChart3');
+      var myChart3 = new Chart(ctx3, {
+          type: 'line',
+          data: dmax_one_half_data,
+          options: setOptions( 'Weight in kg', 'One Hand/Halfgrimp', dmax_one_half)
+      });
+    }
+
+    if (dmax_one_open.dataX.length > 0){
+      var dmax_one_open_dsets = seperateDataset(dmax_one_open)
+      var dmax_one_open_data = datasetConfiguration(dmax_one_open_dsets)
+      var ctx4 = document.getElementById('myChart4');
+      var myChart4 = new Chart(ctx4, {
+          type: 'line',
+          data: dmax_one_open_data,
+          options: setOptions( 'Weight in kg', 'One Hand/Openhand', dmax_one_open)
+      });
+    }
+
+
+      console.log(dmax_two_half_dsets)
+      console.log(datasetConfiguration(dmax_two_half_dsets))
+      console.log(myChart)
+
+      //Überschreibe das Chart object nach außén, damit es für Update Function erreichbar ist
+      chart1 = myChart1
+      chart2 = myChart2
+      chart3 = myChart3
+      chart4 = myChart4
+
+
+
+  },
+    error: function(error_data){
+      console.log("error")
+      console.log(error_data)
+    }
+  })
+
+  // var endpoint = '/api/chart/data/dend/'
+
+</script>
+<h1>Deadhang Maximum Strength</h1>
+{% if not twohands_halfgrimp and not twohands_openhand and not onehand_halfgrimp and not onehand_openhand %}
+<div class="alert alert-primary" role="alert">
+  It seems you don't have any training sessions in this category! Create one to see you first data point.
+</div>
+{% else %}
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-outline-info waves-effect " data-toggle="modal" data-target="#exampleModalCenter">
+  Info
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">Charts to display your progression</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>In this section you can analyse your progress. So far, only the session <i>Deadhang Maximum Strength</i> is surpored.
+        Others may follow soon.
+        You can log your training data in four charts, showing the combinations of Two Hands/One Hand and Halfcrimp/Open hand. As soon as you
+        create the appropriate training session the charts will appear. Use your mouse to check data points or filter datasets by clicking on the legend.</p>
+        <p>Each chart can take up to 5 datasets, representing the different crimp sizes you train on. Get started and check it out!</p>
+
+      </div>
+      <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div> -->
+    </div>
+  </div>
+</div>
+
+
+
+  <div class="row justify-content-center">
+    {% if twohands_halfgrimp %}
+    <div class="col-12 col-lg-6">
+      <div class="row">
+        <div class="col-md-12">
+          <canvas id="myChart" width="400" height="400"></canvas>
+        </div>
+        <div class="col-md-12">
+
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Start Date" id="datepicker1">
+            <input type="text" class="form-control" placeholder="End Date" id="datepicker2">
+            </div>
+
+              <button class="btn btn-primary" type="button" id="filter"
+              onclick="updateChartxAxis(chart1, 'datepicker1','datepicker2',
+              'weight in kg', 'Two hands/Halfgrimp', dmax_two_half );" >Filter</button>
+
+            <!-- yAxisLabel, title, chartdata -->
+
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% if twohands_openhand %}
+    <div class="col-12 col-lg-6">
+      <div class="row">
+        <div class="col-md-12">
+          <canvas id="myChart2" width="400" height="400"></canvas>
+        </div>
+        <div class="col-md-12">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Start Date" id="datepicker3">
+            <input type="text" class="form-control" placeholder="End Date" id="datepicker4">
+            </div>
+              <button class="btn btn-primary" type="button" id="filter"
+              onclick="updateChartxAxis(chart2, 'datepicker3','datepicker4',
+              'weight in kg', 'Two hands/Openhand', dmax_two_open );" >Filter</button>
+
+
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% if onehand_halfgrimp %}
+    <div class="col-12 col-lg-6">
+      <div class="row">
+        <div class="col-md-12">
+          <canvas id="myChart3" width="400" height="400"></canvas>
+        </div>
+        <div class="col-md-12">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Start Date" id="datepicker5">
+            <input type="text" class="form-control" placeholder="End Date" id="datepicker6">
+            </div>
+              <button class="btn btn-primary" type="button" id="filter"
+              onclick="updateChartxAxis(chart3, 'datepicker5','datepicker6',
+              'weight in kg', 'One Hand/Halfgrimp', dmax_one_half );" >Filter</button>
+
+
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% if onehand_openhand %}
+    <div class="col-12 col-lg-6">
+      <div class="row">
+        <div class="col-md-12">
+          <canvas id="myChart4" width="400" height="400"></canvas>
+        </div>
+        <div class="col-md-12">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Start Date" id="datepicker7">
+            <input type="text" class="form-control" placeholder="End Date" id="datepicker8">
+            </div>
+              <button class="btn btn-primary" type="button" id="filter"
+              onclick="updateChartxAxis(chart4, 'datepicker7','datepicker8',
+              'weight in kg', 'One Hand/Openhand', dmax_one_open );" >Filter</button>
+
+
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+{% endif %}
+
+<!-- Charts for Pullups and Deadhang Strength-Endurance ausstehend -->
+
+ <script>
+//    var dend_data_raw = []
+//
+//    var dend_long = new Object()
+//    dend_long.crimpSize = []
+//    dend_long.dataX = []
+//    dend_long.dataY = []
+//    dend_long.hand_position = []
+//
+//    var dend_short = new Object()
+//    dend_short.crimpSize = []
+//    dend_short.dataX = []
+//    dend_short.dataY = []
+//    dend_short.hand_position = []
+//
+//    var dend_short_open = new Object();
+//      dend_short_open.crimpSize = []
+//      dend_short_open.dataX = []
+//      dend_short_open.dataY = []
+//      dend_short_open.data = []
+//
+//    var dend_short_half = new Object();
+//      dend_short_half.crimpSize = []
+//      dend_short_half.dataX = []
+//      dend_short_half.dataY = []
+//      dend_short_half.data = []
+//
+//    var dend_long_open = new Object();
+//      dend_long_open.crimpSize = []
+//      dend_long_open.dataX = []
+//      dend_long_open.dataY = []
+//      dend_long_open.data = []
+//
+//    var dend_long_half = new Object();
+//      dend_long_half.crimpSize = []
+//      dend_long_half.dataX = []
+//      dend_long_half.dataY = []
+//      dend_long_half.data = []
+//
+//    var chart5 = new Object();
+//    var chart6 = new Object();
+//    var chart7 = new Object();
+//    var chart8 = new Object();
+//
+//    var endpoint2 = '/api/chart/data/dend/'
+//
+// $.ajax({
+//   method: "GET",
+//   url: endpoint2,
+//   success:  function(data){
+//     dend_data_raw = data
+//     console.log("This is console log for chart endurance")
+//     console.log(dend_data_raw)
+//     console.log('success')
+//     // if (dend_data_raw[0].hand_position == 'HG' && dmax_data_raw[0].hands == 'TH'){
+//     //   var test = true
+//     // }else{
+//     //   var test = false
+//     // }
+//     // console.log(dmax_data_raw[0].hand_position)
+//     // console.log(test)
+//
+//     //erstes Sortieren: Unterscheidung long und short hands
+//     for (let i = 0; i < dend_data_raw.length; i++){
+//       if (dend_data_raw[i].hold_duration == '1') {
+//         console.log('This step is working')
+//         dend_long.crimpSize.push(dend_data_raw[i].crimp_size);
+//         dend_long.dataY.push(dend_data_raw[i].level);
+//         dend_long.dataX.push(dend_data_raw[i].date);
+//         dend_long.hand_position.push(dend_data_raw[i].hand_position);
+//         //dend_long.dataY.push(Number(dend_data_raw[i].weight));
+//       }
+//       else{
+//         dend_short.crimpSize.push(dmax_data_raw[i].crimp_size);
+//         dend_short.dataY.push(dend_data_raw[i].level);
+//         dend_short.dataX.push(dend_data_raw[i].date);
+//         dend_short.hand_position.push(dend_data_raw[i].hand_position);
+//         //dend_short.dataY.push(Number(dmaxdend_data_raw_data_raw[i].weight));
+//       }
+//       console.log('dend_long:')
+//       console.log(dend_long)
+//       console.log('dend_short:')
+//       console.log(dend_short)
+//     }
+//     //zweites Sortieren: Unterscheidung half grimp und open hand
+//     for (let i = 0; i < dend_long.dataX.length; i++){
+//       if (dend_long.hand_position[i]=='OH'){
+//         console.log('This loop is entered')
+//         dend_long_open.crimpSize.push(dend_long.crimpSize[i])
+//         dend_long_open.dataY.push(dend_long.dataY[i])
+//         dend_long_open.dataX.push(dend_long.dataX[i])
+//         //dend_long_open.dataY.push(dend_long[i].dataY)
+//       }
+//       else{
+//         console.log("This half crimp loop is entered")
+//         dend_long_half.crimpSize.push(dend_long.crimpSize[i])
+//         dend_long_half.dataY.push(dend_long.dataY[i])
+//         dend_long_half.dataX.push(dend_long.dataX[i])
+//         //dend_long_half.dataY.push(dend_long[i].dataY)
+//       }
+//     }
+//     console.log('dend_long_open:')
+//     console.log(dend_long_open)
+//     console.log('dend_long_half:')
+//     console.log(dend_long_half)
+//
+//     for (let i = 0; i < dend_short.length; i++){
+//       if (dend_short[i].hand_position=='OH'){
+//         dend_short_open.crimpSize.push(dend_long[i].crimpSize)
+//         dend_short_open.dataY.push(dend_long[i].dataY)
+//         dend_short_open.dataX.push(dend_long[i].dataX)
+//         //dend_short_open.dataY.push(dend_long[i].dataY)
+//       }
+//       else{
+//         dend_short_half.crimpSize.push(dend_long[i].crimpSize)
+//         dend_short_half.dataY.push(dend_long[i].dataY)
+//         dend_short_half.dataX.push(dend_long[i].dataX)
+//         //end_short_half.dataY.push(dend_long[i].dataY)
+//       }
+//     }
+//
+//     console.log("dend_short_open:")
+//     console.log(dend_short_open)
+//     console.log("dend_short_half:")
+//     console.log(dend_short_half)
+//
+//
+//     // seperateDatasets: Object übergeben mit den Kategorien crimpSize, dataX, dataY
+//     if (dend_short_open.dataX.length > 0){
+//       console.log('data for dend_short_open available')
+//     var dend_short_open_dsets = seperateDataset(dend_short_open)
+//     var dend_short_open_data = datasetConfiguration(dend_short_open_dsets)
+//     var ctx5 = document.getElementById('myChart_end1');
+//     var myChart5 = new Chart(ctx5, {
+//         type: 'line',
+//         data: dend_short_open_data,
+//         options: setOptions( 'Level', 'Short Duration Open Hand', dend_short_open)
+//     });
+//   }
+//   console.log('data for chart5:')
+//   console.log('dend_short_open:')
+//   console.log(dend_short_open)
+//   console.log('dend_short_open_dsets:')
+//   console.log(dend_short_open_dsets)
+//   console.log('dend_short_open_data:')
+//   console.log(dend_short_open_data)
+
+  // if (dend_short_half.dataX.length > 0){
+  //   var dend_short_half_dsets = seperateDataset(dend_short_half)
+  //   var dend_short_half_data = datasetConfiguration(dend_short_half_dsets)
+  //   var ctx6 = document.getElementById('myChart_end2');
+  //   var myChart6 = new Chart(ctx6, {
+  //       type: 'line',
+  //       data: dmax_two_open_data,
+  //       options: setOptions( 'Level', 'Short Duration Halfcrimp', dend_short_half)
+  //   });
+  // }
+  //
+  // if (dend_long_open.dataX.length > 0){
+  //   var dend_long_open_dsets = seperateDataset(dend_long_open)
+  //   var dend_long_open_data = datasetConfiguration(dend_long_open_dsets)
+  //   var ctx7 = document.getElementById('myChart_end3');
+  //   var myChart7 = new Chart(ctx7, {
+  //       type: 'line',
+  //       data: dend_long_open_data,
+  //       options: setOptions( 'Level', 'Long Duration Open Hand', dend_long_open)
+  //   });
+  // }
+  //
+  // if (dend_long_half.dataX.length > 0){
+  //   var dend_long_half_dsets = seperateDataset(dend_long_half)
+  //   var dend_long_half_data = datasetConfiguration(dend_long_half_dsets)
+  //   var ctx8 = document.getElementById('myChart_end4');
+  //   var myChart8 = new Chart(ctx8, {
+  //       type: 'line',
+  //       data: dend_long_half_data,
+  //       options: setOptions( 'Weight in kg', 'One Hands/Openhand', dend_long_half)
+  //   });
+  // }
+
+
+    //Überschreibe das Chart object nach außén, damit es für Update Function erreichbar ist
+    //chart5 = myChart5
+    // chart6 = myChart6
+    // chart7 = myChart7
+    // chart8 = myChart8
+
+
+
+// },
+//   error: function(error_data){
+//     console.log("error")
+//     console.log(error_data)
+//   }
+// })
+//
+// // var endpoint = '/api/chart/data/dend/'
+//
+// </script>
+
+<!-- <h1>Deadhang Strength-Enduracne</h1>
+{% if not short_duration_open and not short_duration_half and not long_duration_open and not long_duration_half  %}
+<div class="alert alert-primary" role="alert">
+  It seems you don't have any training sessions in this category! Create one to see you first data point.
+</div>
+{% else %}
+
+  <div class="row justify-content-center">
+    {% if short_duration_open %}
+    <div class="col-12 col-md-6 col-xl-3">
+      <div class="row">
+        <div class="col-md-12">
+          <canvas id="myChart_end1" width="400" height="400"></canvas>
+        </div>
+        <div class="col-md-12">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Start Date" id="datepicker9">
+            <input type="text" class="form-control" placeholder="End Date" id="datepicker10">
+            <div class="input-group-append">
+              <button class="btn btn-primary" type="button" id="filter"
+              onclick="updateChartxAxis(chart1, 'datepicker1','datepicker2',
+              'weight in kg', 'Two hands/Halfgrimp', dmax_two_half );" >Filter</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% if short_duration_half %}
+    <div class="col-12 col-md-6 col-xl-3">
+      <div class="row">
+        <div class="col-md-12">
+          <canvas id="myChart_end2" width="400" height="400"></canvas>
+        </div>
+        <div class="col-md-12">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Start Date" id="datepicker11">
+            <input type="text" class="form-control" placeholder="End Date" id="datepicker12">
+            <div class="input-group-append">
+              <button class="btn btn-primary" type="button" id="filter"
+              onclick="updateChartxAxis(chart2, 'datepicker3','datepicker4',
+              'weight in kg', 'Two hands/Openhand', dmax_two_open );" >Filter</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% if long_duration_open %}
+    <div class="col-12 col-md-6 col-xl-3">
+      <div class="row">
+        <div class="col-md-12">
+          <canvas id="myChart_end3" width="400" height="400"></canvas>
+        </div>
+        <div class="col-md-12">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Start Date" id="datepicker13">
+            <input type="text" class="form-control" placeholder="End Date" id="datepicker14">
+            <div class="input-group-append">
+              <button class="btn btn-primary" type="button" id="filter"
+              onclick="updateChartxAxis(chart3, 'datepicker5','datepicker6',
+              'weight in kg', 'One Hand/Halfgrimp', dmax_one_half );" >Filter</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% if long_duration_half %}
+    <div class="col-12 col-md-6 col-xl-3">
+      <div class="row">
+        <div class="col-md-12">
+          <canvas id="myChart_end4" width="400" height="400"></canvas>
+        </div>
+        <div class="col-md-12">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Start Date" id="datepicker15">
+            <input type="text" class="form-control" placeholder="End Date" id="datepicker16">
+            <div class="input-group-append">
+              <button class="btn btn-primary" type="button" id="filter"
+              onclick="updateChartxAxis(chart4, 'datepicker7','datepicker8',
+              'weight in kg', 'One Hand/Openhand', dmax_one_open );" >Filter</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+{% endif %} -->
+
+
+
+
+
+  <script>
+
+  // Global + Custom Chart Config Options
+function setOptions(yAxisLabel, title, chartdata){
+  var options = {
+    bezierCurve: false,
+    //animation: true,
+    animationEasing: "easeOutQuart",
+    showScale: false,
+    tooltipEvents: ["mousemove", "touchstart", "touchmove"],
+    tooltipCornerRadius: 3,
+    pointDot : true,
+    pointDotRadius : 4,
+    datasetFill : true,
+    scaleShowLine : true,
+    animationEasing : "easeOutBounce",
+    animateRotate : true,
+    animateScale : true,
+    scales: {
+      xAxes: [{
+          type: 'time',
+          time: {
+              unit: calc_xAxisUnit(chartdata.dataX[0], chartdata.dataX[chartdata.dataX.length-1]),
+              //dmax_two_half[0].dataX, dmax_two_half[dmax_two_half.length-1].dataX,
+              displayFormats: {
+                  quarter: 'MMM YYYY'
+              },
+          },
+          distribution: 'linear'
+      }],
+      yAxes: [{
+          scaleLabel:{
+            display: true,
+            labelString: yAxisLabel
+          },
+      }]
+  },
+  title: {
+      display: true,
+      text: title
+  }
+  };
+  return options;
+}
+
+function updateChartxAxis(chart, datepicker_min, datepicker_max, yAxisLabel, title, chartdata) {//title noch hinzufügen
+  var date_min_str = document.getElementById(datepicker_min).value;
+  console.log("updateChart")
+  console.log(date_min_str)
+  var date_max_str = document.getElementById(datepicker_max).value;
+
+  chart.options = setOptions(yAxisLabel, title, chartdata)
+  chart.options.scales = {
+     xAxes: [{
+         type: 'time',
+         time: {
+             unit: calc_xAxisUnit(date_min_str, date_max_str),
+             displayFormats: {
+                 quarter: '[Q]Q - YYYY'
+             },
+         },
+         ticks: {
+           min: date_min_str,
+           max: date_max_str
+
+         },
+         distribution: 'linear'
+     }],
+     yAxes: [{
+         scaleLabel:{
+           display: true,
+           labelString: yAxisLabel
+         },
+     }]
+ },
+chart.update();
+}
+
+function calc_xAxisUnit(date_min_str, date_max_str){
+  var date_min = new Date(date_min_str)
+  var date_max = new Date(date_max_str)
+  var diffTime = Math.abs(date_max - date_min);
+  var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  console.log(diffDays)
+  var xAxisUnit = []
+
+  if(diffDays < 2){xAxisUnit = 'hour'}else
+  if(diffDays < 30){xAxisUnit = 'day'}else
+  if(diffDays < 50){xAxisUnit = 'week'}else
+  if(diffDays < 120){xAxisUnit = 'month'}else
+  if(diffDays < 360){xAxisUnit = 'quarter'}else{xAxisUnit='year'}
+return xAxisUnit
+}
+
+function seperateDataset(object){
+  var crimpSizes = []
+  // console.log(crimpSizes.includes(object.crimpSize[0]))
+  // console.log(object.dataX.length)
+  //filtern welche Leistengrößen im übergebenen Datenset sind
+  for (let i = 0; i < object.dataX.length; i++){
+    if (crimpSizes.includes(object.crimpSize[i]) == false){
+      crimpSizes.push(object.crimpSize[i]);
+    }
+    //maximal 5 Datensets
+    if (crimpSizes.length == 5){
+      break;
+    }
+  }
+  crimpSizes.sort(sortNumber);
+  //Initialisieren des Base arrays
+   var seperated_datasets = []
+
+  for  (let i = 0; i < crimpSizes.length; i++){
+    //array struktur definieren, sonst gehts nichts
+    seperated_datasets[i] = []
+    seperated_datasets[i].date = [],
+    seperated_datasets[i].weight = [],
+    seperated_datasets[i].crimpSize = crimpSizes[i]
+    //kopieren der entsprechenden passenden Einträge
+    for (let j = 0; j < object.dataX.length; j++){
+      if (crimpSizes[i] == object.crimpSize[j]){
+         seperated_datasets[i].date.push(object.dataX[j])
+         seperated_datasets[i].weight.push(object.dataY[j])
+      }
+    }
+  }
+  return seperated_datasets
+};
+
+function datasetConfiguration(dataset){
+
+  var dataset_label = []
+  var dataset_data = []
+  for (let i = 0; i < dataset.length; i++){
+    dataset_data[i] = []
+    dataset_label[i] = 'Grimpsize: ' + dataset[i].crimpSize.toString() + ' mm'
+    var j = 0
+    while(j < dataset[i].date.length)
+    {
+      dataset_data[i].push({ t: dataset[i].date[j], y: dataset[i].weight[j] },)
+      j++
+    }
+  }
+
+
+  var dataset_obj = []
+  var data = {
+    datasets: []
+  }
+  for (let i = 0; i < dataset.length; i++){
+    dataset_obj[i] = []
+    dataset_obj[i] = {
+      label: dataset_label[i],
+      //data: [65, 59, 80, 81, 56, 55, 40]
+       data: dataset_data[i],
+       borderColor: red[i].borderColor,
+        //hoverBackgroundColor: "#E8F5E9",
+       // hoverBorderColor: green[i].hoverBorderColor,
+       // pointHoverBorderColor: green[i].pointHoverBorderColor,
+       // pointHoverBackgroundColor: green[i].pointHoverBackgroundColor,
+       // pointBackgroundColor: green[i].pointBackgroundColor,
+      // //fillColor: green[i].fillColor,
+      // borderColor: 'rgba(47, 132, 71, 0.8)',
+      // strokeColor: green[i].strokeColor,
+      // pointColor: green[i].pointColor,
+      // pointStrokeColor: green[i].pointStrokeColor,
+      // pointHighlightFill: green[i].pointHighlightFill,
+      // pointHighlightStroke: green[i].pointHighlightStroke,
+      lineTension: 0,
+      //pointHoverRadius: 10,
+      //pointHoverBorderWitdh: 20,
+      fill: false
+    }
+    data.datasets.push(dataset_obj[i])
+  }
+
+
+// console.log(dataset_label)
+// console.log(dataset_data)
+return data
+};
+
+</script>
+
+<script>
+  $(function () {
+    $("input[id^='datepicker']").datepicker({
+     format: 'yyyy-mm-dd'
+   });
+  });
+
+function sortNumber(a, b) {
+  return a - b;
+}
+
+  // Data
+  // var data = {
+  //   datasets: [{
+  //     label: "My First dataset",
+  //     fillColor: "rgba(220,220,220,0.2)",
+  //     strokeColor: "rgba(220,220,220,1)",
+  //     pointColor: "rgba(220,220,220,1)",
+  //     pointStrokeColor: "#fff",
+  //     pointHighlightFill: "#fff",
+  //     pointHighlightStroke: "rgba(220,220,220,1)",
+  //     lineTension: 0,
+  //     pointHoverRadius: 10,
+  //     pointHoverBorderWitdh: 20,
+  //     //data: [65, 59, 80, 81, 56, 55, 40]
+  //     data: dmax_data,
+  //   },
+  //   {
+  //     label: "My Second dataset",
+  //     fillColor: "rgba(100,220,220,0.2)",
+  //     strokeColor: "rgba(100,220,220,1)",
+  //     pointColor: "rgba(100,220,220,1)",
+  //     pointStrokeColor: "#fff",
+  //     pointHighlightFill: "#fff",
+  //     pointHighlightStroke: "rgba(220,220,220,1)",
+  //     lineTension: 0,
+  //     pointHoverRadius: 10,
+  //     pointHoverBorderWitdh: 20,
+  //     //data: [65, 59, 80, 81, 56, 55, 40]
+  //     data: dmax_data,
+  //   }]
+  // };
+</script>
+{% endblock %}

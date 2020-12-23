@@ -1,0 +1,70 @@
+{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<div class="container">
+  <h1><strong>Deadhang Session</strong> </h1>
+  <h3>Maximum Strength</h3>
+  <div class="h-divider">
+  </div>
+  <form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-primary">Add Training</button>
+  </form>
+</div>
+<!--
+<form>
+  <div class="form-group">
+    <div class="row">
+      <div class="col-10">
+
+        <label for="formControlRange">Example Range input</label>
+        <input type="range" class="form-control-range" id="formControlRange" min="-30" max="50" step="0.25"
+        oninput="document.getElementById('sliderValue').innerHTML = this.value">
+
+      </div>
+      <div class="col-2">
+        <label id="sliderValue">asd</label>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div>
+    <p>
+        <label>Price From:</label>
+        <input type="range" id="fromPrice" value="50" min="0" max="500"
+            oninput="document.getElementById('fPrice').innerHTML = this.value" />
+        <label id="fPrice"></label>
+    </p>
+    <p>
+        <label>Price To:</label>
+        <input type="range" id="toPrice" value="450" min="0" max="500"
+            oninput="document.getElementById('tPrice').innerHTML = this.value" />
+        <label id="tPrice"></label>
+    </p>
+    <p><input type="submit" value="submit" onclick="ti()" /></p>
+</div>
+
+
+
+
+
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+  <label class="form-check-label" for="exampleRadios1">
+    Default radio
+  </label>
+</div>
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
+  <label class="form-check-label" for="exampleRadios2">
+    Second default radio
+  </label>
+</div>
+-->
+
+
+{% endblock %}

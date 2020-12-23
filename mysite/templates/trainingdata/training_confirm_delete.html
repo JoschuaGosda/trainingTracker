@@ -1,0 +1,40 @@
+{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<div class="container">
+<form method="post">{% csrf_token %}
+
+
+    {% if training.training_dmax  %}
+      <p>Are you sure you want to delete this session
+        <strong>{{ object.get_title_display }} #{{training.training_dmax.session_counter}} </strong>
+        on <strong>{{training.training_dmax.date}}</strong>?</p>
+
+    {% elif training.training_dend  %}
+    <p>Are you sure you want to delete this session
+      <strong>{{ object.get_title_display }} #{{training.training_dend.session_counter}} </strong>
+      on <strong>{{training.training_dend.date}}</strong>?</p>
+
+    {% elif training.training_pmax  %}
+    <p>Are you sure you want to delete this session
+      <strong>{{ object.get_title_display }} #{{training.training_pmax.session_counter}} </strong>
+      on <strong>{{training.training_pmax.date}}</strong>?</p>
+
+      {% elif training.custom_training  %}
+      <p>Are you sure you want to delete this session
+        <strong>{{ training.custom_training.title }} </strong>
+        on <strong>{{training.custom_training.date}}</strong>?</p>
+
+    {% elif training.training_pend  %}
+    <p>Are you sure you want to delete this session
+      <strong>{{ object.get_title_display }} #{{training.training_pend.session_counter}} </strong>
+      on <strong>{{training.training_pend.date}}</strong>?</p>
+    {% endif %}
+    <button type="submit" class="btn btn-danger ">Confirm</button>
+    <!-- <input type="submit" value="Confirm"> -->
+</form>
+</div>
+
+{% endblock %}

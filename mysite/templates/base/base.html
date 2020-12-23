@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Your Training</title>
+	{% load static %}
+	{% load crispy_forms_tags %}
+	<!-- CSS -->
+	<!-- <link rel="stylesheet" href= "{% static "bootstrap/css/bootstrap.min.css" %}">
+	<link rel="shortcut icon" href="{% static "images/favicon.ico" type="image/x-icon" %}"> -->
+
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+	<!-- Google Fonts -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+	<!-- Bootstrap core CSS -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+	<!-- Material Design Bootstrap -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.15.0/css/mdb.min.css" rel="stylesheet">
+
+
+	<!-- Charts -->
+	<link rel="stylesheet" href= "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css">
+
+
+	<!-- <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous"> -->
+	<!-- <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css"> -->
+
+	<!-- JS -->
+
+	<script src="{% static "bootstrap/js/jquery.min.js" %}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.15.0/js/mdb.min.js"></script>
+	<script src="{% static "bootstrap/js/moment.js" %}" ></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@0.0.1"></script>
+	
+
+	
+
+	
+	
+	
+
+
+	<!-- Fengyuan Chen's Datepicker -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+
+	<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous"> -->
+
+</head>
+
+<body >
+	<nav class="mb-1 navbar navbar-expand-lg navbar-dark orange lighten-1">
+	  <a class="navbar-brand" href="{% url 'index_site' %}">Train smart, not hard</a>
+	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+	    <span class="navbar-toggler-icon"></span>
+	  </button>
+
+	  <div class="collapse navbar-collapse keep-open" id="navbarsExampleDefault">
+			{% if user.is_authenticated %}
+	    <ul class="navbar-nav mr-auto">
+				<li class="nav-item ">
+	        <a class="nav-link" href="{% url 'leaderboard_list' %}"> Leaderboard</a>
+	      </li>
+	      <li class="nav-item ">
+	        <a class="nav-link" href="/analyse/"> Analyse</a>
+	      </li>
+				<li class="nav-item">
+	        <a class="nav-link" href="{% url 'record_list'  %}"> History</a>
+	      </li>
+
+
+
+	      <li class="nav-item dropdown">
+	        <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add a session</a>
+	        <div class="dropdown-menu" aria-labelledby="dropdown01">
+						<div class="dropdown-item">	<strong>Maximum Strength </strong> </div>
+	          <a class="dropdown-item" href="{% url 'deadhang_max' %}"> Deadhangs</a>
+	          <a class="dropdown-item" href="{% url 'pullup_max' %}"> Pullups</a>
+						<div class="dropdown-divider"></div>
+						<div class="dropdown-item">	<strong>Strength-Endurance</strong> </div>
+	          <a class="dropdown-item" href="{% url 'deadhang_endurance' %}">Deadhangs</a>
+						<a class="dropdown-item" href="{% url 'pullup_endurance' %}">Pullups</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="{% url 'custom_training' %}">Custom Training</a>
+	        </div>
+	      </li>
+	    </ul>
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item">
+					<a class="nav-link">logged in as:
+						<div><strong>{{ user.get_username }}</strong></div>
+					</a>
+				</li>
+				<li>
+					<a class="btn btn-outline-primary waves-effect" href="{% url 'logout' %}" >logout</a>
+				</li>
+			</ul>
+
+			{% else %}
+        <ul class="navbar-nav ml-auto">
+						<li class="nav-item dropdown">
+								<a class="btn btn-outline-primary waves-effect" href="/login/">Sign in</a>
+						</li>
+			{% endif %}
+        </ul>
+    </div>
+	</nav>
+
+
+
+	<br>
+
+	<!-- <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+	  <a class="navbar-brand" href="#">Train smart, not hard</a>
+	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+	    <span class="navbar-toggler-icon"></span>
+	  </button>
+
+	  <div class="collapse navbar-collapse keep-open" id="navbarsExampleDefault">
+			{% if user.is_authenticated %}
+	    <ul class="navbar-nav mr-auto">
+
+	      <li class="nav-item">
+	        <a class="nav-link" href="/analyse/"> Analyse</a>
+	      </li>
+				<li class="nav-item">
+	        <a class="nav-link" href="{% url 'record_list' %}"> History</a>
+	      </li>
+
+
+
+	      <li class="nav-item dropdown">
+	        <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add a session</a>
+	        <div class="dropdown-menu" aria-labelledby="dropdown01">
+						<div class="dropdown-item">	<strong>Deadhang</strong> </div>
+	          <a class="dropdown-item" href="{% url 'deadhang_max' %}"> Maximum Strength</a>
+	          <a class="dropdown-item" href="{% url 'deadhang_endurance' %}"> Strength-Endurance</a>
+						<div class="dropdown-divider"></div>
+						<div class="dropdown-item">	<strong>Pullups</strong> </div>
+	          <a class="dropdown-item" href="{% url 'pullup_max' %}">Maximum Strength</a>
+						<a class="dropdown-item" href="{% url 'pullup_endurance' %}">Strength-Endurance</a>
+	        </div>
+	      </li>
+	    </ul>
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item">
+					<a class="nav-link">logged in as <strong>{{ user.get_username }}</strong></a>
+				</li>
+				<li>
+					<a class="btn btn-outline-primary waves-effect" href="{% url 'logout' %}" >logout</a>
+				</li>
+			</ul>
+
+			{% else %}
+        <ul class="navbar-nav ml-auto">
+						<li class="nav-item dropdown">
+								<a class="btn btn-outline-primary" href="/login/">Sign in</a>
+						</li>
+			{% endif %}
+        </ul>
+    </div>
+	</nav> -->
+
+{% block index-site %}
+<!-- this is a comment -->
+<div class="container">
+	{% block content %}
+		<h1>Here is gonna be an overview</h1>
+	{% endblock %}
+</div>
+{% endblock %}
+
+	
+	
+
+</body>
+</html>

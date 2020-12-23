@@ -1,0 +1,29 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block index-site %}
+
+<div class="container-xl">
+  <div class="view overlay zoom">
+    <img src="{% static "images/hangboard_finger_cut.jpg" %}" alt="finger on hangboard" class="img-fluid">
+    <a href="#">
+      <div class="mask pattern-9 rgba-white-slight "></div>
+    </a>
+  </div>
+
+  <div class="jumbotron">
+    <h2 class="display-4">Empower your Training</h2>
+    <p class="lead"> A platform to log and analyze your climbing specific training.
+      </p>
+    <!-- <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p> -->
+
+
+    <!-- Card image -->
+
+    <hr class="my-4">
+
+    <p>Sign up and  take your training to the next level. Also join the hangboard competition to compete against other users if you dare. Let's go!</p>
+    <a class="btn btn-primary btn-lg" href="{% url 'signup' %}" role="button">Sign Up</a>
+  </div>
+</div>
+
+{% endblock %}
