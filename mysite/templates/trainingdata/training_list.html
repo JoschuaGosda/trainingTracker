@@ -138,7 +138,7 @@
           </div>
           <div class="col-lg-auto">
             <div>
-              Weight: <strong>{{training.training_dmax.weight}} </strong>kg
+              Weight: <strong>{{training.training_dmax.additional_weight}} </strong>kg
             </div>
           </div>
           <div class="col-lg-auto">
@@ -208,7 +208,7 @@
           </div>
           <div class="col-lg-auto">
             <div>
-              Weight: <strong>{{training.training_dend.weight}} </strong>kg
+              Weight: <strong>{{training.training_dend.additional_weight}} </strong>kg
             </div>
           </div>
           <div class="col-lg-auto">
@@ -261,7 +261,7 @@
         <div class="row">
           <div class="col-lg-auto">
             <div>
-              Weigth: <strong>{{training.training_pmax.weight}} </strong>kg
+              Weigth: <strong>{{training.training_pmax.additional_weight}} </strong>kg
                 <!-- |  Hand(s):<strong>{{training.training_dmax.get_hands_display}} </strong>
                 |  Crimp size: <strong>{{training.training_dmax.crimp_size}} mm </strong>
                 |  Weight: <strong>{{training.training_dmax.weight}} kg</strong> -->
@@ -356,10 +356,10 @@
             </div>
           </div>
           {% endif %}
-          {% if training.custom_training.weight %}
+          {% if training.custom_training.additional_weight %}
           <div class="col-lg-auto">
             <div>
-              Weight: <strong>{{training.custom_training.weight}}</strong> kg
+              Weight: <strong>{{training.custom_training.additional_weight}}</strong> kg
             </div>
           </div>
           {% endif %}

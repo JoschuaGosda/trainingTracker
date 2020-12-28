@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^api/chart/data/dend/$', views.ChartDataHEND.as_view()),
     url(r'^api/chart/data/pmax/$', views.ChartDataPMAX.as_view()),
     url(r'^api/chart/data/pend/$', views.ChartDataPEND.as_view()),
+    url(r'^api/chart/data/history/$', views.ChartDataHistory.as_view()),
     path('users/', views.UserList.as_view()),
     path('test/', views.test, name='testchart'),
 ]

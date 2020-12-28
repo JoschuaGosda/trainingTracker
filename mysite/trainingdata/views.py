@@ -133,7 +133,6 @@ class RecordListView(ListView ):
     model = Training
     #paginate_by = 5  # if pagination is desired
 
-
     def get_queryset(self, *args, **kwargs):
         queryset = Training.objects.filter(user=self.request.user).order_by('date').reverse()
         return queryset
@@ -141,9 +140,7 @@ class RecordListView(ListView ):
 class RecordListView_Max(ListView ):
     template_name = "trainingdata/training_list.html"
     model = Training
-    #paginate_by = 5  # if pagination is desired
-
-
+ 
     def get_queryset(self, *args, **kwargs):
         queryset = Training.objects.filter(user=self.request.user).filter(Q(title='d1') | Q(title='p1')).order_by('date').reverse()
         return queryset
@@ -151,76 +148,16 @@ class RecordListView_Max(ListView ):
 class RecordListView_End(ListView ):
     template_name = "trainingdata/training_list.html"
     model = Training
-    #paginate_by = 5  # if pagination is desired
-
 
     def get_queryset(self, *args, **kwargs):
         queryset = Training.objects.filter(user=self.request.user).filter(Q(title='d2') | Q(title='p2')).order_by('date').reverse()
         return queryset
 
 
-#queryset = Training.objects.filter(user=self.request.user).exclude(title='d1').order_by('date').reverse()
-
-
-
-
-
-# class DeadhangMaxDetailView(DetailView):
-#     template_name = "trainingdata/dmax_detail.html"
-#     model = Deadhang_max
-#
-#     def get_queryset(self, *args, **kwargs):
-#         queryset = Deadhang_max.objects.filter(user=self.request.user)
-#         return queryset
-#
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         return context
-#
-# class DeadhangEndDetailView(DetailView):
-#     template_name = "trainingdata/dend_detail.html"
-#     model = Deadhang_endurance
-#
-#     def get_queryset(self, *args, **kwargs):
-#         queryset = Deadhang_endurance.objects.filter(user=self.request.user)
-#         return queryset
-#
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         return context
-#
-# class PullupMaxDetailView(DetailView):
-#     template_name = "trainingdata/pmax_detail.html"
-#     model = Pullup_max
-#
-#     def get_queryset(self, *args, **kwargs):
-#         queryset = Pullup_max.objects.filter(user=self.request.user)
-#         return queryset
-#
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         return context
-#
-# class PullupEndDetailView(DetailView):
-#     template_name = "trainingdata/pmax_detail.html"
-#     model = Pullup_endurance
-#
-#     def get_queryset(self, *args, **kwargs):
-#         queryset = Pullup_endurance.objects.filter(user=self.request.user)
-#         return queryset
-#
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         return context
-
 class DeadhangMaxUpdateView(UpdateView):
     template_name = "trainingdata/dmax_update_form.html"
     model = Deadhang_max
-    fields = ['date','hand_position', 'hands', 'weight', 'crimp_size', 'sets','comment']
+    fields = ['date','hand_position', 'hands', 'additional_weight','body_weight', 'crimp_size', 'sets','comment']
     template_name_suffix = '_update_form'
     def get_queryset(self, *args, **kwargs):
         queryset = Deadhang_max.objects.filter(user=self.request.user)
@@ -229,7 +166,7 @@ class DeadhangMaxUpdateView(UpdateView):
 class DeadhangEndUpdateView(UpdateView):
     template_name = "trainingdata/dend_update_form.html"
     model = Deadhang_endurance
-    fields = ['date','hand_position', 'hold_duration','weight', 'crimp_size','level', 'sets', 'repetitions','comment']
+    fields = ['date','hand_position', 'hold_duration','additional_weight','body_weight', 'crimp_size','level', 'sets', 'repetitions','comment']
     template_name_suffix = '_update_form'
     def get_queryset(self, *args, **kwargs):
         queryset = Deadhang_endurance.objects.filter(user=self.request.user)
@@ -238,7 +175,7 @@ class DeadhangEndUpdateView(UpdateView):
 class PullupMaxUpdateView(UpdateView):
     template_name = "trainingdata/pmax_update_form.html"
     model = Pullup_max
-    fields = ['date', 'weight', 'sets', 'repetitions','comment']
+    fields = ['date', 'additional_weight','body_weight', 'sets', 'repetitions','comment']
     template_name_suffix = '_update_form'
     def get_queryset(self, *args, **kwargs):
         queryset = Pullup_max.objects.filter(user=self.request.user)

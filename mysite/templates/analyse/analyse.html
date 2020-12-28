@@ -1,42 +1,38 @@
 {% extends 'base/base.html' %}
 {% block content %}
-
-
-
-
 <!-- Get the data from the database -->
 <script>
+  
   var endpoint = '/api/chart/data/dmax/'
   var dmax_data_raw = []
 
-  var dmax_one_half = new Object();
-    dmax_one_half.crimpSize = []
-    dmax_one_half.dataX = []
-    dmax_one_half.dataY = []
-    dmax_one_half.data = []
+  var dmax_half = new Object();
+    dmax_half.crimpSize = []
+    dmax_half.dataX = []
+    dmax_half.dataY = []
+    dmax_half.data = []
 
-  var dmax_two_half = new Object();
-    dmax_two_half.crimpSize = []
-    dmax_two_half.dataX = []
-    dmax_two_half.dataY = []
-    dmax_two_half.data = []
+  var xxx = new Object();
+    xxx.crimpSize = []
+    xxx.dataX = []
+    xxx.dataY = []
+    xxx.data = []
 
-  var dmax_one_open = new Object();
-    dmax_one_open.crimpSize = []
-    dmax_one_open.dataX = []
-    dmax_one_open.dataY = []
-    dmax_one_open.data = []
+  var dmax_open = new Object();
+    dmax_open.crimpSize = []
+    dmax_open.dataX = []
+    dmax_open.dataY = []
+    dmax_open.data = []
 
-  var dmax_two_open = new Object();
-    dmax_two_open.crimpSize = []
-    dmax_two_open.dataX = []
-    dmax_two_open.dataY = []
-    dmax_two_open.data = []
+  var xxx = new Object();
+    xxx.crimpSize = []
+    xxx.dataX = []
+    xxx.dataY = []
+    xxx.data = []
 
-  var chart1 = new Object();
-  var chart2 = new Object();
   var chart3 = new Object();
   var chart4 = new Object();
+  var myBarChart = new Object();
 
   var red = [
     red_1 = {
@@ -80,12 +76,6 @@
       // pointBackgroundColor: "#E8F5E9",
       }
     ]
-// console.log("tint")
-// for( let i = 0; i<5; i++){
-//   console.log(green[i].strokeColor)
-// }
-
-
 
   $.ajaxSetup({
   async: true
@@ -96,198 +86,250 @@
     url: endpoint,
     success:  function(data){
       dmax_data_raw = data
-      console.log(dmax_data_raw)
-      console.log('success')
+      ////console.log(dmax_data_raw)
+      //////console.log('success')
       if (dmax_data_raw[0].hand_position == 'HG' && dmax_data_raw[0].hands == 'TH'){
         var test = true
       }else{
         var test = false
       }
-      console.log(dmax_data_raw[0].hand_position)
-      console.log(test)
+      ////console.log(dmax_data_raw[0].hand_position)
+      //console.log(test)
 
       for (let i = 0; i < dmax_data_raw.length; i++){
-        if (dmax_data_raw[i].hand_position == 'HG' && dmax_data_raw[i].hands == 'OH') {
-          dmax_one_half.crimpSize.push(dmax_data_raw[i].crimp_size);
-          dmax_one_half.dataX.push(dmax_data_raw[i].date);
-          dmax_one_half.dataY.push(Number(dmax_data_raw[i].weight));
+        if (dmax_data_raw[i].hand_position == 'HG') {
+          dmax_half.crimpSize.push(dmax_data_raw[i].crimp_size);
+          dmax_half.dataX.push(dmax_data_raw[i].date);
+          if (dmax_data_raw[i].hands == 'TH'){
+            dmax_half.dataY.push(Math.round((Number(dmax_data_raw[i].additional_weight)+Number(dmax_data_raw[i].body_weight))/Number(dmax_data_raw[i].body_weight) * 100));
+          } else if (dmax_data_raw[i].hands == 'OH'){
+            dmax_half.dataY.push(Math.round((Number(dmax_data_raw[i].additional_weight)+Number(dmax_data_raw[i].body_weight))/Number(dmax_data_raw[i].body_weight) * 100 * 2));
+          }
         }
-        else if (dmax_data_raw[i].hand_position == 'HG' && dmax_data_raw[i].hands == 'TH') {
-          dmax_two_half.crimpSize.push(dmax_data_raw[i].crimp_size);
-          dmax_two_half.dataX.push(dmax_data_raw[i].date);
-          dmax_two_half.dataY.push(Number(dmax_data_raw[i].weight));
-        }
-        else if (dmax_data_raw[i].hand_position == 'OH' && dmax_data_raw[i].hands == 'OH') {
-          dmax_one_open.crimpSize.push(dmax_data_raw[i].crimp_size);
-          dmax_one_open.dataX.push(dmax_data_raw[i].date);
-          dmax_one_open.dataY.push(Number(dmax_data_raw[i].weight));
-        }
-        else if (dmax_data_raw[i].hand_position == 'OH' && dmax_data_raw[i].hands == 'TH') {
-          dmax_two_open.crimpSize.push(dmax_data_raw[i].crimp_size);
-          dmax_two_open.dataX.push(dmax_data_raw[i].date);
-          dmax_two_open.dataY.push(Number(dmax_data_raw[i].weight));
+        else if (dmax_data_raw[i].hand_position == 'OH') {
+          dmax_open.crimpSize.push(dmax_data_raw[i].crimp_size);
+          dmax_open.dataX.push(dmax_data_raw[i].date);
+          if (dmax_data_raw[i].hands == 'TH'){
+            dmax_open.dataY.push(Math.round((Number(dmax_data_raw[i].additional_weight)+Number(dmax_data_raw[i].body_weight))/Number(dmax_data_raw[i].body_weight) * 100));
+          } else if (dmax_data_raw[i].hands == 'OH'){
+            dmax_open.dataY.push(Math.round((Number(dmax_data_raw[i].additional_weight)+Number(dmax_data_raw[i].body_weight))/Number(dmax_data_raw[i].body_weight) * 100 * 2));
+          }
         }
       }
 
-        console.log(dmax_two_half)
-        console.log(dmax_two_half)
 
-      // seperateDatasets: Object übergeben mit den Kategorien crimpSize, dataX, dataY
-      if (dmax_two_half.dataX.length > 0){
-      var dmax_two_half_dsets = seperateDataset(dmax_two_half)
-      var dmax_two_half_data = datasetConfiguration(dmax_two_half_dsets)
-      var ctx = document.getElementById('myChart');
-      var myChart1 = new Chart(ctx, {
-          type: 'line',
-          data: dmax_two_half_data,
-          options: setOptions( 'Weight in kg', 'Two Hands/Halfgrimp', dmax_two_half)
-      });
-    }
-
-    if (dmax_two_open.dataX.length > 0){
-      var dmax_two_open_dsets = seperateDataset(dmax_two_open)
-      var dmax_two_open_data = datasetConfiguration(dmax_two_open_dsets)
-      var ctx2 = document.getElementById('myChart2');
-      var myChart2 = new Chart(ctx2, {
-          type: 'line',
-          data: dmax_two_open_data,
-          options: setOptions( 'Weight in kg', 'Two Hands/Openhand', dmax_two_open)
-      });
-    }
-
-    if (dmax_one_half.dataX.length > 0){
-      var dmax_one_half_dsets = seperateDataset(dmax_one_half)
-      console.log('hi du')
-      console.log(dmax_one_half_dsets)
+    if (dmax_half.dataX.length > 0){
+      var dmax_half_dsets = seperateDataset(dmax_half)
+      //console.log('hi du')
+      //console.log(dmax_half_dsets)
       var abc = 1
-      if (dmax_one_half_dsets){abc = 2}
-      console.log(abc)
-      var dmax_one_half_data = datasetConfiguration(dmax_one_half_dsets)
+      if (dmax_half_dsets){abc = 2}
+      //console.log(abc)
+      var dmax_half_data = datasetConfiguration(dmax_half_dsets)
       var ctx3 = document.getElementById('myChart3');
       var myChart3 = new Chart(ctx3, {
           type: 'line',
-          data: dmax_one_half_data,
-          options: setOptions( 'Weight in kg', 'One Hand/Halfgrimp', dmax_one_half)
+          data: dmax_half_data,
+          options: setOptions( 'Relative Weight in %', 'Halfgrimp', dmax_half)
       });
     }
 
-    if (dmax_one_open.dataX.length > 0){
-      var dmax_one_open_dsets = seperateDataset(dmax_one_open)
-      var dmax_one_open_data = datasetConfiguration(dmax_one_open_dsets)
+    if (dmax_open.dataX.length > 0){
+      var dmax_open_dsets = seperateDataset(dmax_open)
+      var dmax_open_data = datasetConfiguration(dmax_open_dsets)
       var ctx4 = document.getElementById('myChart4');
       var myChart4 = new Chart(ctx4, {
           type: 'line',
-          data: dmax_one_open_data,
-          options: setOptions( 'Weight in kg', 'One Hand/Openhand', dmax_one_open)
+          data: dmax_open_data,
+          options: setOptions( 'Relative Weight in %', 'Openhand', dmax_open)
       });
     }
 
-
-      console.log(dmax_two_half_dsets)
-      console.log(datasetConfiguration(dmax_two_half_dsets))
-      console.log(myChart)
+    
 
       //Überschreibe das Chart object nach außén, damit es für Update Function erreichbar ist
-      chart1 = myChart1
-      chart2 = myChart2
       chart3 = myChart3
       chart4 = myChart4
-
-
-
   },
     error: function(error_data){
-      console.log("error")
-      console.log(error_data)
+      //console.log("error")
+      //console.log(error_data)
     }
-  })
+  });
 
-  // var endpoint = '/api/chart/data/dend/'
+  $.ajax({
+    url: '/api/chart/data/history/',
+    success: function(data) {
+        training_dict = jQuery.parseJSON(data);
+        console.log(jQuery.parseJSON(data));
+        console.log(training_dict["max_finger"]);
+        //console.log(["Red", "Blue", "Yellow", "Green", "Purple", "Orange"]);
 
+        function createLabelsBarChart(number_of_past_weeks){
+          label = []
+          var currentWeek = (new Date()).getWeek();
+          console.log("currentWeek", currentWeek);
+          for( i = 0; i < number_of_past_weeks; i++){
+            if(currentWeek-i < 1){
+              currentWeek = 52;
+            }
+            label.push("Week " + (currentWeek-i).toString() );
+            //{ t: new Date(), y: 10 },
+          }
+          label.reverse();
+          console.log("label", label)
+          return label
+        }
+          
+
+
+        var ctxBar = document.getElementById('myBarChart');
+        var myBarChart = new Chart(ctxBar, {
+        type: 'bar',
+            data: {
+              labels: createLabelsBarChart(training_dict["max_finger"].length),
+              datasets: [
+                {
+                  label: 'Finger Max-Strength',
+                  data: training_dict["max_finger"],
+                  backgroundColor: 'rgba(128, 0, 0, 0.5)',
+                  borderColor: [],
+                  borderWidth: 2
+                },
+                {
+                  label: 'Pullups Max-Strength',
+                  data: training_dict["max_pull"],
+                  backgroundColor: 'rgba(255, 0, 0, 0.5)',
+                  borderColor: [],
+                  borderWidth: 2
+                },
+                {
+                  label: 'Core Max-Strength',
+                  data: training_dict["max_core"],
+                  backgroundColor: 'rgba(230, 70, 0, 0.5)',
+                  borderColor: [],
+                  borderWidth: 2
+                },
+                {
+                  label: 'Finger Power-End.',
+                  data: training_dict["end_finger"],
+                  backgroundColor: 'rgba(0, 0, 150, 0.5)',
+                  borderColor: [],
+                  borderWidth: 2
+                },
+                {
+                  label: 'Pullups Power-End.',
+                  data: training_dict["end_pull"],
+                  backgroundColor: 'rgba(76, 0, 225, 0.5)',
+                  borderColor: [],
+                  borderWidth: 2
+                },
+                {
+                  label: 'Core Power-End.',
+                  data: training_dict["end_core"],
+                  backgroundColor: 'rgba(102, 0, 102, 0.5)',
+                  borderColor: [],
+                  borderWidth: 2
+                },
+                {
+                  label: 'Flexibilty',
+                  data: training_dict["flex"],
+                  backgroundColor: 'rgba(115, 230, 0, 0.5)',
+                  borderColor: [],
+                  borderWidth: 2
+                },
+                {
+                  label: 'Antagonists',
+                  data: training_dict["antagonist"],
+                  backgroundColor: 'rgba(230, 230, 0, 0.5)',
+                  borderColor: [],
+                  borderWidth: 2
+                },
+                {
+                  label: 'Other',
+                  data: training_dict["other"],
+                  backgroundColor: 'rgba(0, 102, 102, 0.5)',
+                  borderColor: [],
+                  borderWidth: 2
+                },
+              ]
+            },
+            options: {
+              title: {
+              display: true,
+              text: 'Training Sessions over Past Weeks'
+              },
+              scales: {
+                yAxes: [{
+                  stacked: true,
+                  ticks: {
+                    beginAtZero: true
+                  }
+                }],
+                xAxes: [{
+                  stacked: true,
+                  ticks: {
+                    beginAtZero: true
+                  }
+                }]
+
+              }
+            }
+          });
+    //  
+    }
+});
 </script>
-<h1>Deadhang Maximum Strength</h1>
-{% if not twohands_halfgrimp and not twohands_openhand and not onehand_halfgrimp and not onehand_openhand %}
-<div class="alert alert-primary" role="alert">
-  It seems you don't have any training sessions in this category! Create one to see you first data point.
-</div>
-{% else %}
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-outline-info waves-effect " data-toggle="modal" data-target="#exampleModalCenter">
-  Info
-</button>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalCenterTitle">Charts to display your progression</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times </span>
-        </button>
+
+
+<h1>Overview</h1>
+  <div class="row justify-content-center">
+    <div class="col-12 ">
+      <div class="row">
+        <div class="col-md-12">
+          <canvas id="myBarChart" width="400" height="200"></canvas>
+        </div>
       </div>
-      <div class="modal-body">
-        <p>In this section you can analyse your progress. So far, only the session <i>Deadhang Maximum Strength</i> is surpored.
-        Others may follow soon.
-        You can log your training data in four charts, showing the combinations of Two Hands/One Hand and Halfcrimp/Open hand. As soon as you
-        create the appropriate training session the charts will appear. Use your mouse to check data points or filter datasets by clicking on the legend.</p>
-        <p>Each chart can take up to 5 datasets, representing the different crimp sizes you train on. Get started and check it out!</p>
-
-      </div>
-      <!-- <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div> -->
     </div>
   </div>
-</div>
+    <br><br>
+    <h1>Deadhang Maximum Strength</h1>
+    {% if not twohands_halfgrimp and not twohands_openhand and not onehand_halfgrimp and not onehand_openhand %}
+    <div class="alert alert-primary" role="alert">
+      It seems you don't have any training sessions in this category! Create one to see you first data point.
+    </div>
+    {% else %}
 
+    <!-- Button trigger modal
+    <button type="button" class="btn btn-outline-info waves-effect " data-toggle="modal" data-target="#exampleModalCenter">
+      Info
+    </button>
 
+    
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalCenterTitle">Charts to display your progression</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times </span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>In this section you can analyse your progress. So far, only the session <i>Deadhang Maximum Strength</i> is surpored.
+            Others may follow soon.
+            You can log your training data in four charts, showing the combinations of Two Hands/One Hand and Halfcrimp/Open hand. As soon as you
+            create the appropriate training session the charts will appear. Use your mouse to check data points or filter datasets by clicking on the legend.</p>
+            <p>Each chart can take up to 5 datasets, representing the different crimp sizes you train on. Get started and check it out!</p>
 
-  <div class="row justify-content-center">
-    {% if twohands_halfgrimp %}
-    <div class="col-12 col-lg-6">
-      <div class="row">
-        <div class="col-md-12">
-          <canvas id="myChart" width="400" height="400"></canvas>
-        </div>
-        <div class="col-md-12">
-
-          <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Start Date" id="datepicker1">
-            <input type="text" class="form-control" placeholder="End Date" id="datepicker2">
-            </div>
-
-              <button class="btn btn-primary" type="button" id="filter"
-              onclick="updateChartxAxis(chart1, 'datepicker1','datepicker2',
-              'weight in kg', 'Two hands/Halfgrimp', dmax_two_half );" >Filter</button>
-
-            <!-- yAxisLabel, title, chartdata -->
-
+          </div>
         </div>
       </div>
-    </div>
-    {% endif %}
-    {% if twohands_openhand %}
-    <div class="col-12 col-lg-6">
-      <div class="row">
-        <div class="col-md-12">
-          <canvas id="myChart2" width="400" height="400"></canvas>
-        </div>
-        <div class="col-md-12">
-          <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Start Date" id="datepicker3">
-            <input type="text" class="form-control" placeholder="End Date" id="datepicker4">
-            </div>
-              <button class="btn btn-primary" type="button" id="filter"
-              onclick="updateChartxAxis(chart2, 'datepicker3','datepicker4',
-              'weight in kg', 'Two hands/Openhand', dmax_two_open );" >Filter</button>
+    </div> -->
 
-
-        </div>
-      </div>
-    </div>
-    {% endif %}
+    <div class="row justify-content-center">
     {% if onehand_halfgrimp %}
     <div class="col-12 col-lg-6">
       <div class="row">
@@ -301,7 +343,7 @@
             </div>
               <button class="btn btn-primary" type="button" id="filter"
               onclick="updateChartxAxis(chart3, 'datepicker5','datepicker6',
-              'weight in kg', 'One Hand/Halfgrimp', dmax_one_half );" >Filter</button>
+              'Relative Weight in %', 'Halfgrimp', dmax_half );" >Filter</button>
 
 
         </div>
@@ -321,315 +363,96 @@
             </div>
               <button class="btn btn-primary" type="button" id="filter"
               onclick="updateChartxAxis(chart4, 'datepicker7','datepicker8',
-              'weight in kg', 'One Hand/Openhand', dmax_one_open );" >Filter</button>
-
-
+              'Relative Weight in %', 'Openhand', dmax_open );" >Filter</button>
         </div>
       </div>
     </div>
     {% endif %}
+    <!-- <script>
+      window.onload = function() {
+        var ctxBar = document.getElementById('myBarChart');
+        var myBarChart = new Chart(ctxBar, {
+          type: 'bar',
+          data: {
+            labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+            datasets: [{
+                label: '# of Votes 1',
+                data: [10, 19, 3, 5, 2, 3],
+                backgroundColor: [
+                  'rgba(255, 99, 132, 0.2)',
+                  'rgba(255, 99, 132, 0.2)',
+                  'rgba(255, 99, 132, 0.2)',
+                  'rgba(255, 99, 132, 0.2)',
+                  'rgba(255, 99, 132, 0.2)',
+                  'rgba(255, 99, 132, 0.2)'
+                ],
+                borderColor: [
+                  'rgba(255,99,132,1)',
+                  'rgba(255,99,132,1)',
+                  'rgba(255,99,132,1)',
+                  'rgba(255,99,132,1)',
+                  'rgba(255,99,132,1)',
+                  'rgba(255,99,132,1)'
+                ],
+                borderWidth: 2
+              },
+              {
+                label: '# of Votes 2',
+                data: [15, 19, 3, 5, 2, 3],
+                backgroundColor: [
+                  'rgba(255, 159, 64, 0.2)',
+                  'rgba(255, 159, 64, 0.2)',
+                  'rgba(255, 159, 64, 0.2)',
+                  'rgba(255, 159, 64, 0.2)',
+                  'rgba(255, 159, 64, 0.2)',
+                  'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                  'rgba(255, 159, 64, 1)',
+                  'rgba(255, 159, 64, 1)',
+                  'rgba(255, 159, 64, 1)',
+                  'rgba(255, 159, 64, 1)',
+                  'rgba(255, 159, 64, 1)',
+                  'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 2
+              }
+            ]
+          },
+          options: {
+            scales: {
+              yAxes: [{
+                stacked: true,
+                ticks: {
+                  beginAtZero: true
+                }
+              }],
+              xAxes: [{
+                stacked: true,
+                ticks: {
+                  beginAtZero: true
+                }
+              }]
+
+            }
+          }
+        });
+  }
+  var bar_data = {{ training_dict }};   
+  console.log(bar_data)
+    </script> -->
+
+
+    
+
   </div>
 {% endif %}
 
+
+
 <!-- Charts for Pullups and Deadhang Strength-Endurance ausstehend -->
 
- <script>
-//    var dend_data_raw = []
-//
-//    var dend_long = new Object()
-//    dend_long.crimpSize = []
-//    dend_long.dataX = []
-//    dend_long.dataY = []
-//    dend_long.hand_position = []
-//
-//    var dend_short = new Object()
-//    dend_short.crimpSize = []
-//    dend_short.dataX = []
-//    dend_short.dataY = []
-//    dend_short.hand_position = []
-//
-//    var dend_short_open = new Object();
-//      dend_short_open.crimpSize = []
-//      dend_short_open.dataX = []
-//      dend_short_open.dataY = []
-//      dend_short_open.data = []
-//
-//    var dend_short_half = new Object();
-//      dend_short_half.crimpSize = []
-//      dend_short_half.dataX = []
-//      dend_short_half.dataY = []
-//      dend_short_half.data = []
-//
-//    var dend_long_open = new Object();
-//      dend_long_open.crimpSize = []
-//      dend_long_open.dataX = []
-//      dend_long_open.dataY = []
-//      dend_long_open.data = []
-//
-//    var dend_long_half = new Object();
-//      dend_long_half.crimpSize = []
-//      dend_long_half.dataX = []
-//      dend_long_half.dataY = []
-//      dend_long_half.data = []
-//
-//    var chart5 = new Object();
-//    var chart6 = new Object();
-//    var chart7 = new Object();
-//    var chart8 = new Object();
-//
-//    var endpoint2 = '/api/chart/data/dend/'
-//
-// $.ajax({
-//   method: "GET",
-//   url: endpoint2,
-//   success:  function(data){
-//     dend_data_raw = data
-//     console.log("This is console log for chart endurance")
-//     console.log(dend_data_raw)
-//     console.log('success')
-//     // if (dend_data_raw[0].hand_position == 'HG' && dmax_data_raw[0].hands == 'TH'){
-//     //   var test = true
-//     // }else{
-//     //   var test = false
-//     // }
-//     // console.log(dmax_data_raw[0].hand_position)
-//     // console.log(test)
-//
-//     //erstes Sortieren: Unterscheidung long und short hands
-//     for (let i = 0; i < dend_data_raw.length; i++){
-//       if (dend_data_raw[i].hold_duration == '1') {
-//         console.log('This step is working')
-//         dend_long.crimpSize.push(dend_data_raw[i].crimp_size);
-//         dend_long.dataY.push(dend_data_raw[i].level);
-//         dend_long.dataX.push(dend_data_raw[i].date);
-//         dend_long.hand_position.push(dend_data_raw[i].hand_position);
-//         //dend_long.dataY.push(Number(dend_data_raw[i].weight));
-//       }
-//       else{
-//         dend_short.crimpSize.push(dmax_data_raw[i].crimp_size);
-//         dend_short.dataY.push(dend_data_raw[i].level);
-//         dend_short.dataX.push(dend_data_raw[i].date);
-//         dend_short.hand_position.push(dend_data_raw[i].hand_position);
-//         //dend_short.dataY.push(Number(dmaxdend_data_raw_data_raw[i].weight));
-//       }
-//       console.log('dend_long:')
-//       console.log(dend_long)
-//       console.log('dend_short:')
-//       console.log(dend_short)
-//     }
-//     //zweites Sortieren: Unterscheidung half grimp und open hand
-//     for (let i = 0; i < dend_long.dataX.length; i++){
-//       if (dend_long.hand_position[i]=='OH'){
-//         console.log('This loop is entered')
-//         dend_long_open.crimpSize.push(dend_long.crimpSize[i])
-//         dend_long_open.dataY.push(dend_long.dataY[i])
-//         dend_long_open.dataX.push(dend_long.dataX[i])
-//         //dend_long_open.dataY.push(dend_long[i].dataY)
-//       }
-//       else{
-//         console.log("This half crimp loop is entered")
-//         dend_long_half.crimpSize.push(dend_long.crimpSize[i])
-//         dend_long_half.dataY.push(dend_long.dataY[i])
-//         dend_long_half.dataX.push(dend_long.dataX[i])
-//         //dend_long_half.dataY.push(dend_long[i].dataY)
-//       }
-//     }
-//     console.log('dend_long_open:')
-//     console.log(dend_long_open)
-//     console.log('dend_long_half:')
-//     console.log(dend_long_half)
-//
-//     for (let i = 0; i < dend_short.length; i++){
-//       if (dend_short[i].hand_position=='OH'){
-//         dend_short_open.crimpSize.push(dend_long[i].crimpSize)
-//         dend_short_open.dataY.push(dend_long[i].dataY)
-//         dend_short_open.dataX.push(dend_long[i].dataX)
-//         //dend_short_open.dataY.push(dend_long[i].dataY)
-//       }
-//       else{
-//         dend_short_half.crimpSize.push(dend_long[i].crimpSize)
-//         dend_short_half.dataY.push(dend_long[i].dataY)
-//         dend_short_half.dataX.push(dend_long[i].dataX)
-//         //end_short_half.dataY.push(dend_long[i].dataY)
-//       }
-//     }
-//
-//     console.log("dend_short_open:")
-//     console.log(dend_short_open)
-//     console.log("dend_short_half:")
-//     console.log(dend_short_half)
-//
-//
-//     // seperateDatasets: Object übergeben mit den Kategorien crimpSize, dataX, dataY
-//     if (dend_short_open.dataX.length > 0){
-//       console.log('data for dend_short_open available')
-//     var dend_short_open_dsets = seperateDataset(dend_short_open)
-//     var dend_short_open_data = datasetConfiguration(dend_short_open_dsets)
-//     var ctx5 = document.getElementById('myChart_end1');
-//     var myChart5 = new Chart(ctx5, {
-//         type: 'line',
-//         data: dend_short_open_data,
-//         options: setOptions( 'Level', 'Short Duration Open Hand', dend_short_open)
-//     });
-//   }
-//   console.log('data for chart5:')
-//   console.log('dend_short_open:')
-//   console.log(dend_short_open)
-//   console.log('dend_short_open_dsets:')
-//   console.log(dend_short_open_dsets)
-//   console.log('dend_short_open_data:')
-//   console.log(dend_short_open_data)
-
-  // if (dend_short_half.dataX.length > 0){
-  //   var dend_short_half_dsets = seperateDataset(dend_short_half)
-  //   var dend_short_half_data = datasetConfiguration(dend_short_half_dsets)
-  //   var ctx6 = document.getElementById('myChart_end2');
-  //   var myChart6 = new Chart(ctx6, {
-  //       type: 'line',
-  //       data: dmax_two_open_data,
-  //       options: setOptions( 'Level', 'Short Duration Halfcrimp', dend_short_half)
-  //   });
-  // }
-  //
-  // if (dend_long_open.dataX.length > 0){
-  //   var dend_long_open_dsets = seperateDataset(dend_long_open)
-  //   var dend_long_open_data = datasetConfiguration(dend_long_open_dsets)
-  //   var ctx7 = document.getElementById('myChart_end3');
-  //   var myChart7 = new Chart(ctx7, {
-  //       type: 'line',
-  //       data: dend_long_open_data,
-  //       options: setOptions( 'Level', 'Long Duration Open Hand', dend_long_open)
-  //   });
-  // }
-  //
-  // if (dend_long_half.dataX.length > 0){
-  //   var dend_long_half_dsets = seperateDataset(dend_long_half)
-  //   var dend_long_half_data = datasetConfiguration(dend_long_half_dsets)
-  //   var ctx8 = document.getElementById('myChart_end4');
-  //   var myChart8 = new Chart(ctx8, {
-  //       type: 'line',
-  //       data: dend_long_half_data,
-  //       options: setOptions( 'Weight in kg', 'One Hands/Openhand', dend_long_half)
-  //   });
-  // }
-
-
-    //Überschreibe das Chart object nach außén, damit es für Update Function erreichbar ist
-    //chart5 = myChart5
-    // chart6 = myChart6
-    // chart7 = myChart7
-    // chart8 = myChart8
-
-
-
-// },
-//   error: function(error_data){
-//     console.log("error")
-//     console.log(error_data)
-//   }
-// })
-//
-// // var endpoint = '/api/chart/data/dend/'
-//
-// </script>
-
-<!-- <h1>Deadhang Strength-Enduracne</h1>
-{% if not short_duration_open and not short_duration_half and not long_duration_open and not long_duration_half  %}
-<div class="alert alert-primary" role="alert">
-  It seems you don't have any training sessions in this category! Create one to see you first data point.
-</div>
-{% else %}
-
-  <div class="row justify-content-center">
-    {% if short_duration_open %}
-    <div class="col-12 col-md-6 col-xl-3">
-      <div class="row">
-        <div class="col-md-12">
-          <canvas id="myChart_end1" width="400" height="400"></canvas>
-        </div>
-        <div class="col-md-12">
-          <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Start Date" id="datepicker9">
-            <input type="text" class="form-control" placeholder="End Date" id="datepicker10">
-            <div class="input-group-append">
-              <button class="btn btn-primary" type="button" id="filter"
-              onclick="updateChartxAxis(chart1, 'datepicker1','datepicker2',
-              'weight in kg', 'Two hands/Halfgrimp', dmax_two_half );" >Filter</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    {% endif %}
-    {% if short_duration_half %}
-    <div class="col-12 col-md-6 col-xl-3">
-      <div class="row">
-        <div class="col-md-12">
-          <canvas id="myChart_end2" width="400" height="400"></canvas>
-        </div>
-        <div class="col-md-12">
-          <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Start Date" id="datepicker11">
-            <input type="text" class="form-control" placeholder="End Date" id="datepicker12">
-            <div class="input-group-append">
-              <button class="btn btn-primary" type="button" id="filter"
-              onclick="updateChartxAxis(chart2, 'datepicker3','datepicker4',
-              'weight in kg', 'Two hands/Openhand', dmax_two_open );" >Filter</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    {% endif %}
-    {% if long_duration_open %}
-    <div class="col-12 col-md-6 col-xl-3">
-      <div class="row">
-        <div class="col-md-12">
-          <canvas id="myChart_end3" width="400" height="400"></canvas>
-        </div>
-        <div class="col-md-12">
-          <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Start Date" id="datepicker13">
-            <input type="text" class="form-control" placeholder="End Date" id="datepicker14">
-            <div class="input-group-append">
-              <button class="btn btn-primary" type="button" id="filter"
-              onclick="updateChartxAxis(chart3, 'datepicker5','datepicker6',
-              'weight in kg', 'One Hand/Halfgrimp', dmax_one_half );" >Filter</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    {% endif %}
-    {% if long_duration_half %}
-    <div class="col-12 col-md-6 col-xl-3">
-      <div class="row">
-        <div class="col-md-12">
-          <canvas id="myChart_end4" width="400" height="400"></canvas>
-        </div>
-        <div class="col-md-12">
-          <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Start Date" id="datepicker15">
-            <input type="text" class="form-control" placeholder="End Date" id="datepicker16">
-            <div class="input-group-append">
-              <button class="btn btn-primary" type="button" id="filter"
-              onclick="updateChartxAxis(chart4, 'datepicker7','datepicker8',
-              'weight in kg', 'One Hand/Openhand', dmax_one_open );" >Filter</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    {% endif %}
-  </div>
-{% endif %} -->
-
-
-
-
-
-  <script>
-
+<script>
   // Global + Custom Chart Config Options
 function setOptions(yAxisLabel, title, chartdata){
   var options = {
@@ -651,7 +474,7 @@ function setOptions(yAxisLabel, title, chartdata){
           type: 'time',
           time: {
               unit: calc_xAxisUnit(chartdata.dataX[0], chartdata.dataX[chartdata.dataX.length-1]),
-              //dmax_two_half[0].dataX, dmax_two_half[dmax_two_half.length-1].dataX,
+              //xxx[0].dataX, xxx[xxx.length-1].dataX,
               displayFormats: {
                   quarter: 'MMM YYYY'
               },
@@ -675,8 +498,8 @@ function setOptions(yAxisLabel, title, chartdata){
 
 function updateChartxAxis(chart, datepicker_min, datepicker_max, yAxisLabel, title, chartdata) {//title noch hinzufügen
   var date_min_str = document.getElementById(datepicker_min).value;
-  console.log("updateChart")
-  console.log(date_min_str)
+  //console.log("updateChart")
+  //console.log(date_min_str)
   var date_max_str = document.getElementById(datepicker_max).value;
 
   chart.options = setOptions(yAxisLabel, title, chartdata)
@@ -711,7 +534,7 @@ function calc_xAxisUnit(date_min_str, date_max_str){
   var date_max = new Date(date_max_str)
   var diffTime = Math.abs(date_max - date_min);
   var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  console.log(diffDays)
+  //console.log(diffDays)
   var xAxisUnit = []
 
   if(diffDays < 2){xAxisUnit = 'hour'}else
@@ -724,8 +547,6 @@ return xAxisUnit
 
 function seperateDataset(object){
   var crimpSizes = []
-  // console.log(crimpSizes.includes(object.crimpSize[0]))
-  // console.log(object.dataX.length)
   //filtern welche Leistengrößen im übergebenen Datenset sind
   for (let i = 0; i < object.dataX.length; i++){
     if (crimpSizes.includes(object.crimpSize[i]) == false){
@@ -744,13 +565,13 @@ function seperateDataset(object){
     //array struktur definieren, sonst gehts nichts
     seperated_datasets[i] = []
     seperated_datasets[i].date = [],
-    seperated_datasets[i].weight = [],
+    seperated_datasets[i].additional_weight = [],
     seperated_datasets[i].crimpSize = crimpSizes[i]
     //kopieren der entsprechenden passenden Einträge
     for (let j = 0; j < object.dataX.length; j++){
       if (crimpSizes[i] == object.crimpSize[j]){
          seperated_datasets[i].date.push(object.dataX[j])
-         seperated_datasets[i].weight.push(object.dataY[j])
+         seperated_datasets[i].additional_weight.push(object.dataY[j])
       }
     }
   }
@@ -767,7 +588,7 @@ function datasetConfiguration(dataset){
     var j = 0
     while(j < dataset[i].date.length)
     {
-      dataset_data[i].push({ t: dataset[i].date[j], y: dataset[i].weight[j] },)
+      dataset_data[i].push({ t: dataset[i].date[j], y: dataset[i].additional_weight[j] },)
       j++
     }
   }
@@ -796,7 +617,7 @@ function datasetConfiguration(dataset){
       // pointStrokeColor: green[i].pointStrokeColor,
       // pointHighlightFill: green[i].pointHighlightFill,
       // pointHighlightStroke: green[i].pointHighlightStroke,
-      lineTension: 0,
+      lineTension: 0.2,
       //pointHoverRadius: 10,
       //pointHoverBorderWitdh: 20,
       fill: false
@@ -805,8 +626,8 @@ function datasetConfiguration(dataset){
   }
 
 
-// console.log(dataset_label)
-// console.log(dataset_data)
+// //console.log(dataset_label)
+// //console.log(dataset_data)
 return data
 };
 
@@ -822,6 +643,17 @@ return data
 function sortNumber(a, b) {
   return a - b;
 }
+
+Date.prototype.getWeek = function() {
+        var onejan = new Date(this.getFullYear(), 0, 1);
+        return Math.ceil((((this - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+    }
+
+    var weekNumber = (new Date()).getWeek();
+
+    var dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    var now = new Date();
+    document.write(dayNames[now.getDay()] + " (" + weekNumber + ").");
 
   // Data
   // var data = {
@@ -855,4 +687,8 @@ function sortNumber(a, b) {
   //   }]
   // };
 </script>
+
+
+
+
 {% endblock %}
