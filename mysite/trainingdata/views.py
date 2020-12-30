@@ -30,9 +30,17 @@ def create_deadhang_max(request):
             user = request.user
             date = datetime.date(fs.date)
             fs.user = user
+            bodyWeight = fs.body_weight
+            additionalWeight = fs.additional_weight
+            if fs.hands == 'OH':
+                relative_strength = (int)((bodyWeight + additionalWeight) / bodyWeight * 2 * 100)
+            else:
+                relative_strength = (int)((bodyWeight + additionalWeight) / bodyWeight * 100)
+            print("relative strength", relative_strength)
             Training.objects.create(title='d1', user=user, date=date)
             fs.training = Training.objects.filter(user=user).last()
             fs.session_counter = Deadhang_max.objects.filter(user=user).count()+1
+            fs.relative_strength = relative_strength
             fs.save()
             return redirect('record_list')
             #form = Deadhang_max_Form()

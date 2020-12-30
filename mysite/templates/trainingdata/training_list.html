@@ -8,8 +8,21 @@
 <!-- Button trigger modal -->
 
 <div class="row">
-  <div class="col-6">
-    <button type="button" class="btn btn-outline-info waves-effect " data-toggle="modal" data-target="#exampleModalCenter">
+  <div class="col-12">
+
+    <!-- Basic dropdown -->
+    <a class="btn btn-primary dropdown-toggle mr-4 float-right" type="button" data-toggle="dropdown" aria-haspopup="true"
+    aria-expanded="false">Filter</a>
+
+    <div class="dropdown-menu">
+    <a class="dropdown-item" href="{% url 'record_list'  %}">All</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="{% url 'record_list_max'  %}">Maximum Strength</a>
+    <a class="dropdown-item" href="{% url 'record_list_end'  %}">Strength-Endurance</a>
+    </div>
+    <!-- Basic dropdown -->
+
+    <button type="button" class="btn btn-outline-info waves-effect float-right" data-toggle="modal" data-target="#exampleModalCenter">
       Info
     </button>
 
@@ -63,23 +76,6 @@
     </div>
     <br><br>
   </div>
-
-
-  <div class="col-6">
-   
-    <!-- Basic dropdown -->
-    <a class="btn btn-primary dropdown-toggle mr-4 float-right" type="button" data-toggle="dropdown" aria-haspopup="true"
-    aria-expanded="false">Filter</a>
-
-    <div class="dropdown-menu">
-    <a class="dropdown-item" href="{% url 'record_list'  %}">All</a>
-    <div class="dropdown-divider"></div>
-    <a class="dropdown-item" href="{% url 'record_list_max'  %}">Maximum Strength</a>
-    <a class="dropdown-item" href="{% url 'record_list_end'  %}">Strength-Endurance</a>
-    </div>
-    <!-- Basic dropdown -->
-
-  </div>
 </div>
 
 
@@ -89,8 +85,9 @@
 
 <ul>
 {% for training in object_list %}
-<h6>{% ifchanged %} Week <strong>{{training.date|date:"W"}}</strong></h6>
-<strong><hr></strong>
+<h6>{% ifchanged %} 
+  Week <strong>{{training.date|date:"W"}}</strong>
+  </h6>
  {% endifchanged %}
 {% ifchanged  %}
 <!-- <div class="shadow p-3 mb-3 bg-white rounded" "> -->
@@ -304,7 +301,25 @@
       <div class="card-body">
         <!-- <h5 class="card-title">{{training.training_pmax.date|date:"H:i"}}</h5> -->
         <h6 class="card-subtitle mb-2 text-muted">
-          {% if training.custom_training.energy_system == '1' %}
+          {% if training.custom_training.target == '4' %}
+          <span class="dot" style="height: 15px;
+            width: 15px;
+            background-color: #30c538;
+            border-radius: 50%;
+            display: inline-block;"></span>
+          {% elif training.custom_training.target == '5' %}
+          <span class="dot" style="height: 15px;
+            width: 15px;
+            background-color: #c2388d;
+            border-radius: 50%;
+            display: inline-block;"></span>
+          {% elif training.custom_training.target == '6' %}
+          <span class="dot" style="height: 15px;
+            width: 15px;
+            background-color: #5e015e;
+            border-radius: 50%;
+            display: inline-block;"></span>
+          {% elif training.custom_training.energy_system == '1' %}
           <span class="dot" style="height: 15px;
             width: 15px;
             background-color: #C14242;

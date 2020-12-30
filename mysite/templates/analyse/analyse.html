@@ -1,288 +1,5 @@
 {% extends 'base/base.html' %}
 {% block content %}
-<!-- Get the data from the database -->
-<script>
-  
-  var endpoint = '/api/chart/data/dmax/'
-  var dmax_data_raw = []
-
-  var dmax_half = new Object();
-    dmax_half.crimpSize = []
-    dmax_half.dataX = []
-    dmax_half.dataY = []
-    dmax_half.data = []
-
-  var xxx = new Object();
-    xxx.crimpSize = []
-    xxx.dataX = []
-    xxx.dataY = []
-    xxx.data = []
-
-  var dmax_open = new Object();
-    dmax_open.crimpSize = []
-    dmax_open.dataX = []
-    dmax_open.dataY = []
-    dmax_open.data = []
-
-  var xxx = new Object();
-    xxx.crimpSize = []
-    xxx.dataX = []
-    xxx.dataY = []
-    xxx.data = []
-
-  var chart3 = new Object();
-  var chart4 = new Object();
-  var myBarChart = new Object();
-
-  var red = [
-    red_1 = {
-      borderColor: "#D50000",
-      // hoverBackgroundColor: "#1B5E20",
-      // hoverBorderColor: "#1B5E20",
-      // pointHoverBorderColor: "#BDBDBD",
-      // pointHoverBackgroundColor: "#BDBDBD",
-      // pointBackgroundColor: "#1B5E20",
-    },
-    red_2 = {
-      borderColor: "#FF1744",
-      // hoverBackgroundColor: "#388E3C",
-      // hoverBorderColor: "#388E3C",
-      // pointHoverBorderColor: "#BDBDBD",
-      // pointHoverBackgroundColor: "#BDBDBD",
-      // pointBackgroundColor: "#388E3C",
-    },
-    red_3 = {
-      borderColor: "#FF5252",
-      // hoverBackgroundColor: "#66BB6A",
-      // hoverBorderColor: "#66BB6A",
-      // pointHoverBorderColor: "#BDBDBD",
-      // pointHoverBackgroundColor: "#BDBDBD",
-      // pointBackgroundColor: "#66BB6A",
-    },
-    red_4 = {
-      borderColor: "#FF8A80",
-      // hoverBackgroundColor: "#A5D6A7",
-      // hoverBorderColor: "#A5D6A7",
-      // pointHoverBorderColor: "#BDBDBD",
-      // pointHoverBackgroundColor: "#BDBDBD",
-      // pointBackgroundColor: "#A5D6A7",
-    },
-    red_5 = {
-      borderColor: "#FFCDD2",
-      // hoverBackgroundColor: "#E8F5E9",
-      // hoverBorderColor: "#E8F5E9",
-      // pointHoverBorderColor: "#BDBDBD",
-      // pointHoverBackgroundColor: "#BDBDBD",
-      // pointBackgroundColor: "#E8F5E9",
-      }
-    ]
-
-  $.ajaxSetup({
-  async: true
-  });
-
-  $.ajax({
-    method: "GET",
-    url: endpoint,
-    success:  function(data){
-      dmax_data_raw = data
-      ////console.log(dmax_data_raw)
-      //////console.log('success')
-      if (dmax_data_raw[0].hand_position == 'HG' && dmax_data_raw[0].hands == 'TH'){
-        var test = true
-      }else{
-        var test = false
-      }
-      ////console.log(dmax_data_raw[0].hand_position)
-      //console.log(test)
-
-      for (let i = 0; i < dmax_data_raw.length; i++){
-        if (dmax_data_raw[i].hand_position == 'HG') {
-          dmax_half.crimpSize.push(dmax_data_raw[i].crimp_size);
-          dmax_half.dataX.push(dmax_data_raw[i].date);
-          if (dmax_data_raw[i].hands == 'TH'){
-            dmax_half.dataY.push(Math.round((Number(dmax_data_raw[i].additional_weight)+Number(dmax_data_raw[i].body_weight))/Number(dmax_data_raw[i].body_weight) * 100));
-          } else if (dmax_data_raw[i].hands == 'OH'){
-            dmax_half.dataY.push(Math.round((Number(dmax_data_raw[i].additional_weight)+Number(dmax_data_raw[i].body_weight))/Number(dmax_data_raw[i].body_weight) * 100 * 2));
-          }
-        }
-        else if (dmax_data_raw[i].hand_position == 'OH') {
-          dmax_open.crimpSize.push(dmax_data_raw[i].crimp_size);
-          dmax_open.dataX.push(dmax_data_raw[i].date);
-          if (dmax_data_raw[i].hands == 'TH'){
-            dmax_open.dataY.push(Math.round((Number(dmax_data_raw[i].additional_weight)+Number(dmax_data_raw[i].body_weight))/Number(dmax_data_raw[i].body_weight) * 100));
-          } else if (dmax_data_raw[i].hands == 'OH'){
-            dmax_open.dataY.push(Math.round((Number(dmax_data_raw[i].additional_weight)+Number(dmax_data_raw[i].body_weight))/Number(dmax_data_raw[i].body_weight) * 100 * 2));
-          }
-        }
-      }
-
-
-    if (dmax_half.dataX.length > 0){
-      var dmax_half_dsets = seperateDataset(dmax_half)
-      //console.log('hi du')
-      //console.log(dmax_half_dsets)
-      var abc = 1
-      if (dmax_half_dsets){abc = 2}
-      //console.log(abc)
-      var dmax_half_data = datasetConfiguration(dmax_half_dsets)
-      var ctx3 = document.getElementById('myChart3');
-      var myChart3 = new Chart(ctx3, {
-          type: 'line',
-          data: dmax_half_data,
-          options: setOptions( 'Relative Weight in %', 'Halfgrimp', dmax_half)
-      });
-    }
-
-    if (dmax_open.dataX.length > 0){
-      var dmax_open_dsets = seperateDataset(dmax_open)
-      var dmax_open_data = datasetConfiguration(dmax_open_dsets)
-      var ctx4 = document.getElementById('myChart4');
-      var myChart4 = new Chart(ctx4, {
-          type: 'line',
-          data: dmax_open_data,
-          options: setOptions( 'Relative Weight in %', 'Openhand', dmax_open)
-      });
-    }
-
-    
-
-      //Überschreibe das Chart object nach außén, damit es für Update Function erreichbar ist
-      chart3 = myChart3
-      chart4 = myChart4
-  },
-    error: function(error_data){
-      //console.log("error")
-      //console.log(error_data)
-    }
-  });
-
-  $.ajax({
-    url: '/api/chart/data/history/',
-    success: function(data) {
-        training_dict = jQuery.parseJSON(data);
-        console.log(jQuery.parseJSON(data));
-        console.log(training_dict["max_finger"]);
-        //console.log(["Red", "Blue", "Yellow", "Green", "Purple", "Orange"]);
-
-        function createLabelsBarChart(number_of_past_weeks){
-          label = []
-          var currentWeek = (new Date()).getWeek();
-          console.log("currentWeek", currentWeek);
-          for( i = 0; i < number_of_past_weeks; i++){
-            if(currentWeek-i < 1){
-              currentWeek = 52;
-            }
-            label.push("Week " + (currentWeek-i).toString() );
-            //{ t: new Date(), y: 10 },
-          }
-          label.reverse();
-          console.log("label", label)
-          return label
-        }
-          
-
-
-        var ctxBar = document.getElementById('myBarChart');
-        var myBarChart = new Chart(ctxBar, {
-        type: 'bar',
-            data: {
-              labels: createLabelsBarChart(training_dict["max_finger"].length),
-              datasets: [
-                {
-                  label: 'Finger Max-Strength',
-                  data: training_dict["max_finger"],
-                  backgroundColor: 'rgba(128, 0, 0, 0.5)',
-                  borderColor: [],
-                  borderWidth: 2
-                },
-                {
-                  label: 'Pullups Max-Strength',
-                  data: training_dict["max_pull"],
-                  backgroundColor: 'rgba(255, 0, 0, 0.5)',
-                  borderColor: [],
-                  borderWidth: 2
-                },
-                {
-                  label: 'Core Max-Strength',
-                  data: training_dict["max_core"],
-                  backgroundColor: 'rgba(230, 70, 0, 0.5)',
-                  borderColor: [],
-                  borderWidth: 2
-                },
-                {
-                  label: 'Finger Power-End.',
-                  data: training_dict["end_finger"],
-                  backgroundColor: 'rgba(0, 0, 150, 0.5)',
-                  borderColor: [],
-                  borderWidth: 2
-                },
-                {
-                  label: 'Pullups Power-End.',
-                  data: training_dict["end_pull"],
-                  backgroundColor: 'rgba(76, 0, 225, 0.5)',
-                  borderColor: [],
-                  borderWidth: 2
-                },
-                {
-                  label: 'Core Power-End.',
-                  data: training_dict["end_core"],
-                  backgroundColor: 'rgba(102, 0, 102, 0.5)',
-                  borderColor: [],
-                  borderWidth: 2
-                },
-                {
-                  label: 'Flexibilty',
-                  data: training_dict["flex"],
-                  backgroundColor: 'rgba(115, 230, 0, 0.5)',
-                  borderColor: [],
-                  borderWidth: 2
-                },
-                {
-                  label: 'Antagonists',
-                  data: training_dict["antagonist"],
-                  backgroundColor: 'rgba(230, 230, 0, 0.5)',
-                  borderColor: [],
-                  borderWidth: 2
-                },
-                {
-                  label: 'Other',
-                  data: training_dict["other"],
-                  backgroundColor: 'rgba(0, 102, 102, 0.5)',
-                  borderColor: [],
-                  borderWidth: 2
-                },
-              ]
-            },
-            options: {
-              title: {
-              display: true,
-              text: 'Training Sessions over Past Weeks'
-              },
-              scales: {
-                yAxes: [{
-                  stacked: true,
-                  ticks: {
-                    beginAtZero: true
-                  }
-                }],
-                xAxes: [{
-                  stacked: true,
-                  ticks: {
-                    beginAtZero: true
-                  }
-                }]
-
-              }
-            }
-          });
-    //  
-    }
-});
-</script>
-
-
-
 
 <h1>Overview</h1>
   <div class="row justify-content-center">
@@ -438,15 +155,301 @@
           }
         });
   }
-  var bar_data = {{ training_dict }};   
-  console.log(bar_data)
-    </script> -->
+  
 
 
     
 
   </div>
 {% endif %}
+
+<!-- Get the data from the database -->
+<script>
+  
+  var endpoint = '/api/chart/data/dmax/'
+  var dmax_data_raw = []
+
+  var dmax_half = new Object();
+    dmax_half.crimpSize = []
+    dmax_half.dataX = []
+    dmax_half.dataY = []
+    dmax_half.data = []
+
+  var xxx = new Object();
+    xxx.crimpSize = []
+    xxx.dataX = []
+    xxx.dataY = []
+    xxx.data = []
+
+  var dmax_open = new Object();
+    dmax_open.crimpSize = []
+    dmax_open.dataX = []
+    dmax_open.dataY = []
+    dmax_open.data = []
+
+  var xxx = new Object();
+    xxx.crimpSize = []
+    xxx.dataX = []
+    xxx.dataY = []
+    xxx.data = []
+
+  var chart3 = new Object();
+  var chart4 = new Object();
+  var myBarChart = new Object();
+
+  var red = [
+    red_1 = {
+      borderColor: "#D50000",
+      // hoverBackgroundColor: "#1B5E20",
+      // hoverBorderColor: "#1B5E20",
+      // pointHoverBorderColor: "#BDBDBD",
+      // pointHoverBackgroundColor: "#BDBDBD",
+      // pointBackgroundColor: "#1B5E20",
+    },
+    red_2 = {
+      borderColor: "#FF1744",
+      // hoverBackgroundColor: "#388E3C",
+      // hoverBorderColor: "#388E3C",
+      // pointHoverBorderColor: "#BDBDBD",
+      // pointHoverBackgroundColor: "#BDBDBD",
+      // pointBackgroundColor: "#388E3C",
+    },
+    red_3 = {
+      borderColor: "#FF5252",
+      // hoverBackgroundColor: "#66BB6A",
+      // hoverBorderColor: "#66BB6A",
+      // pointHoverBorderColor: "#BDBDBD",
+      // pointHoverBackgroundColor: "#BDBDBD",
+      // pointBackgroundColor: "#66BB6A",
+    },
+    red_4 = {
+      borderColor: "#FF8A80",
+      // hoverBackgroundColor: "#A5D6A7",
+      // hoverBorderColor: "#A5D6A7",
+      // pointHoverBorderColor: "#BDBDBD",
+      // pointHoverBackgroundColor: "#BDBDBD",
+      // pointBackgroundColor: "#A5D6A7",
+    },
+    red_5 = {
+      borderColor: "#FFCDD2",
+      // hoverBackgroundColor: "#E8F5E9",
+      // hoverBorderColor: "#E8F5E9",
+      // pointHoverBorderColor: "#BDBDBD",
+      // pointHoverBackgroundColor: "#BDBDBD",
+      // pointBackgroundColor: "#E8F5E9",
+      }
+    ]
+
+  $.ajaxSetup({
+  async: true
+  });
+
+  window.onload = function() {
+  $.ajax({
+    method: "GET",
+    url: endpoint,
+    success:  function(data){
+      dmax_data_raw = data
+      console.log(dmax_data_raw)
+      //////console.log('success')
+      if (dmax_data_raw[0].hand_position == 'HG' && dmax_data_raw[0].hands == 'TH'){
+        var test = true
+      }else{
+        var test = false
+      }
+      ////console.log(dmax_data_raw[0].hand_position)
+      //console.log(test)
+
+      for (let i = 0; i < dmax_data_raw.length; i++){
+        if (dmax_data_raw[i].hand_position == 'HG') {
+          dmax_half.crimpSize.push(dmax_data_raw[i].crimp_size);
+          dmax_half.dataX.push(dmax_data_raw[i].date);
+          if (dmax_data_raw[i].hands == 'TH'){
+            dmax_half.dataY.push(Math.round((Number(dmax_data_raw[i].additional_weight)+Number(dmax_data_raw[i].body_weight))/Number(dmax_data_raw[i].body_weight) * 100));
+          } else if (dmax_data_raw[i].hands == 'OH'){
+            dmax_half.dataY.push(Math.round((Number(dmax_data_raw[i].additional_weight)+Number(dmax_data_raw[i].body_weight))/Number(dmax_data_raw[i].body_weight) * 100 * 2));
+          }
+        }
+        else if (dmax_data_raw[i].hand_position == 'OH') {
+          dmax_open.crimpSize.push(dmax_data_raw[i].crimp_size);
+          dmax_open.dataX.push(dmax_data_raw[i].date);
+          if (dmax_data_raw[i].hands == 'TH'){
+            dmax_open.dataY.push(Math.round((Number(dmax_data_raw[i].additional_weight)+Number(dmax_data_raw[i].body_weight))/Number(dmax_data_raw[i].body_weight) * 100));
+          } else if (dmax_data_raw[i].hands == 'OH'){
+            dmax_open.dataY.push(Math.round((Number(dmax_data_raw[i].additional_weight)+Number(dmax_data_raw[i].body_weight))/Number(dmax_data_raw[i].body_weight) * 100 * 2));
+          }
+        }
+      }
+
+      console.log("dmax_half_data", dmax_half);
+    if (dmax_half.dataX.length > 0){
+      var dmax_half_dsets = seperateDataset(dmax_half)
+      console.log("dmax_half_dsets", dmax_half_dsets);
+      var dmax_half_data = datasetConfiguration(dmax_half_dsets)
+      console.log("dmax_half_data", dmax_half_data);
+      console.log("dmax_half", dmax_half);
+      var ctx3 = document.getElementById('myChart3');
+      console.log("abctest");
+      var myChart3 = new Chart(ctx3, {
+          type: 'line',
+          data: dmax_half_data,
+          options: setOptions( 'Relative Weight in %', 'Halfgrimp', dmax_half)
+      });
+    }
+    console.log("dfgtest");
+
+    if (dmax_open.dataX.length > 0){
+      var dmax_open_dsets = seperateDataset(dmax_open)
+      var dmax_open_data = datasetConfiguration(dmax_open_dsets)
+      var ctx4 = document.getElementById('myChart4');
+      var myChart4 = new Chart(ctx4, {
+          type: 'line',
+          data: dmax_open_data,
+          options: setOptions( 'Relative Weight in %', 'Openhand', dmax_open)
+      });
+    }
+    console.log("dmax_open_data", dmax_open_data);
+    
+
+      //Überschreibe das Chart object nach außén, damit es für Update Function erreichbar ist
+      chart3 = myChart3
+      chart4 = myChart4
+  },
+    error: function(error_data){
+      //console.log("error")
+      //console.log(error_data)
+    }
+  });
+}
+
+  $.ajax({
+    url: '/api/chart/data/history/',
+    success: function(data) {
+        training_dict = jQuery.parseJSON(data);
+        console.log(jQuery.parseJSON(data));
+        console.log(training_dict["max_finger"]);
+        //console.log(["Red", "Blue", "Yellow", "Green", "Purple", "Orange"]);
+
+        function createLabelsBarChart(number_of_past_weeks){
+          label = []
+          var currentWeek = (new Date()).getWeek();
+          console.log("currentWeek", currentWeek);
+          for( i = 0; i < number_of_past_weeks; i++){
+            if(currentWeek-i < 1){
+              currentWeek = 52;
+            }
+            label.push("Week " + (currentWeek-i).toString() );
+            //{ t: new Date(), y: 10 },
+          }
+          label.reverse();
+          console.log("label", label)
+          return label
+        }
+          
+
+
+        var ctxBar = document.getElementById('myBarChart');
+        var myBarChart = new Chart(ctxBar, {
+        type: 'bar',
+            data: {
+              labels: createLabelsBarChart(training_dict["max_finger"].length),
+              datasets: [
+                {
+                  label: 'Finger Max-Strength',
+                  data: training_dict["max_finger"],
+                  backgroundColor: 'rgba(128, 0, 0, 0.5)',
+                  borderColor: [],
+                  borderWidth: 2
+                },
+                {
+                  label: 'Pullups Max-Strength',
+                  data: training_dict["max_pull"],
+                  backgroundColor: 'rgba(255, 0, 0, 0.5)',
+                  borderColor: [],
+                  borderWidth: 2
+                },
+                {
+                  label: 'Core Max-Strength',
+                  data: training_dict["max_core"],
+                  backgroundColor: 'rgba(230, 70, 0, 0.5)',
+                  borderColor: [],
+                  borderWidth: 2
+                },
+                {
+                  label: 'Finger Power-End.',
+                  data: training_dict["end_finger"],
+                  backgroundColor: 'rgba(0, 0, 150, 0.5)',
+                  borderColor: [],
+                  borderWidth: 2
+                },
+                {
+                  label: 'Pullups Power-End.',
+                  data: training_dict["end_pull"],
+                  backgroundColor: 'rgba(76, 0, 225, 0.5)',
+                  borderColor: [],
+                  borderWidth: 2
+                },
+                {
+                  label: 'Core Power-End.',
+                  data: training_dict["end_core"],
+                  backgroundColor: 'rgba(102, 0, 102, 0.5)',
+                  borderColor: [],
+                  borderWidth: 2
+                },
+                {
+                  label: 'Flexibilty',
+                  data: training_dict["flex"],
+                  backgroundColor: 'rgba(115, 230, 0, 0.5)',
+                  borderColor: [],
+                  borderWidth: 2
+                },
+                {
+                  label: 'Antagonists',
+                  data: training_dict["antagonist"],
+                  backgroundColor: 'rgba(230, 230, 0, 0.5)',
+                  borderColor: [],
+                  borderWidth: 2
+                },
+                {
+                  label: 'Other',
+                  data: training_dict["other"],
+                  backgroundColor: 'rgba(0, 102, 102, 0.5)',
+                  borderColor: [],
+                  borderWidth: 2
+                },
+              ]
+            },
+            options: {
+              title: {
+              display: true,
+              text: 'Training Sessions over Past Weeks'
+              },
+              scales: {
+                yAxes: [{
+                  stacked: true,
+                  ticks: {
+                    beginAtZero: true
+                  }
+                }],
+                xAxes: [{
+                  stacked: true,
+                  ticks: {
+                    beginAtZero: true
+                  }
+                }]
+
+              }
+            }
+          });
+    //  
+    }
+});
+</script>
+
+
+
+
+
 
 
 
@@ -653,7 +656,7 @@ Date.prototype.getWeek = function() {
 
     var dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     var now = new Date();
-    document.write(dayNames[now.getDay()] + " (" + weekNumber + ").");
+    //document.write(dayNames[now.getDay()] + " (" + weekNumber + ").");
 
   // Data
   // var data = {

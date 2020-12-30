@@ -93,17 +93,6 @@ class TrainingHistory:
 		print(history_dict)
 		return history_dict
 
-        
-               
-    
-
-
-class Leaderboard(models.Model):
-	time = models.IntegerField()
-	user = models.ForeignKey(
-		settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-	)
 
 class CustomSession(models.Model):
 	title = models.CharField(max_length=30)
@@ -111,11 +100,13 @@ class CustomSession(models.Model):
 	MAXIMUM_STRENGTH = '1'
 	STRENGTH_ENDURANCE = '2'
 	AEROBIC_ENDURANCE = '3'
+	NONE = '0'
 
 	ENERGYSYTEM_CHOICES = [
 		(MAXIMUM_STRENGTH, 'Maximum Strength (anaerobic alactic)'),
 		(STRENGTH_ENDURANCE, 'Strength-Endurance (glycolytic/anaerobic lactic)'),
 		(AEROBIC_ENDURANCE, 'Aerobic Endurance (aerobic/oxidative)'),
+		(NONE, 'None'),
 	]
 	energy_system = models.CharField(max_length=1, choices=ENERGYSYTEM_CHOICES, default=MAXIMUM_STRENGTH)
 
@@ -184,6 +175,7 @@ class Deadhang_max(models.Model):
 		)
 	additional_weight = models.DecimalField(max_digits=5, decimal_places=2, default=0)
 	body_weight = models.DecimalField(max_digits=5, decimal_places=2, default = 72)
+	relative_strength = models.IntegerField(default=100)
 	crimp_size = models.IntegerField(default=20)
 
 	user = models.ForeignKey(

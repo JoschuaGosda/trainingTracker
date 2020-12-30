@@ -1,15 +1,11 @@
 from django.forms import ModelForm, Textarea, TextInput
-from .models import Deadhang_max, Deadhang_endurance, Pullup_max, Pullup_endurance, CustomSession, Leaderboard
+from .models import Deadhang_max, Deadhang_endurance, Pullup_max, Pullup_endurance, CustomSession
 
-class Leaderboard_Form(ModelForm):
-	class Meta:
-		model = Leaderboard
-		exclude = ['user']
 
 class Deadhang_max_Form(ModelForm):
 	class Meta:
 		model = Deadhang_max
-		exclude = ['user','training','session_counter']
+		exclude = ['user','training','session_counter','relative_strength']
 		widgets = {
             'comment': Textarea(attrs={
 			'placeholder':'How did you feel today? Add some extra notes if needed.',
